@@ -1,0 +1,141 @@
+﻿@page "/ListPage"
+@*〈공통〉*@
+@implements IDisposable
+@inject IJSRuntime JS               // 자바스크립트 관련
+@inject ProtectedLocalStorage LS    // 로컬스토리지 관련
+@inject NavigationManager NM        // 페이지 이동 관련
+@* 뷰모델의 인스턴스 주입 *@
+@inject RGWeb.ViewModels.IContentViewModel VM
+@using static RGWeb.Models.ContentModel
+
+@using OpenQA.Selenium;
+@using OpenQA.Selenium.Firefox;
+
+<h3>ListPage @kkk</h3>
+<button @onclick="PageFirstStart">button</button>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        VM.oContentList.PropertyChanged += async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        };
+
+        await base.OnInitializedAsync();
+    }
+
+    async void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    // 메모리 누수 방지
+    public void Dispose()
+    {
+        VM.oContentList.PropertyChanged -= OnPropertyChangedHandler;
+    }
+
+    // 페이지가 로드 될 시 (비동기)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) // 첫번째 렌더때 실행
+        {
+            ;
+        }
+        else             // 첫번째 렌더 후에 실행
+        {
+            ;
+        }
+    }
+
+    protected FirefoxDriverService driverService;
+    protected FirefoxOptions options;
+    protected FirefoxDriver driver;
+
+    string kkk = "kkk";
+
+    // 페이지의 시작
+    public async Task PageFirstStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
+    {
+        // System.IO.Directory.GetCurrentDirectory() + @"\bin\Debug\net6.0\"
+        driverService = FirefoxDriverService.CreateDefaultService();
+        //driverService.HideCommandPromptWindow = true;
+        driverService.Port = 4444;
+        options = new FirefoxOptions();
+        //options.AddArgument("-window-size=1920x1080");
+        options.AddArgument("-headless");
+        options.AddArgument("-disable-gpu");
+        driver = new FirefoxDriver(driverService, options);
+
+        driver.Navigate().GoToUrl("https://gall.dcinside.com/board/lists/?id=baseball_new10");
+        //driver.Navigate().GoToUrl("https://gall.dcinside.com/board/lists/?id=comic_new3");
+        driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+        //Thread myThread = new Thread(ListRefresh); 
+        //myThread.Start(); 
+        ListRefresh();
+    }
+
+    private async Task ListRefresh()
+    {
+        while(true)
+        {
+            try
+            {
+                driver.Navigate().Refresh();
+                driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+
+                IReadOnlyCollection<IWebElement> x = driver.FindElements(By.CssSelector("tr[class='ub-content us-post']"));
+                VM.oContentList.ClearDataset();
+                foreach(IWebElement y in x)
+                {
+                    //string lIp = y.FindElement(By.ClassName("ip")).Text;
+                    string luserIconUrl = "";
+                    //try
+                    //{
+                    //    IReadOnlyCollection<IWebElement> tt = y.FindElements(By.ClassName("writer_nikcon"));
+                    //}
+                    //catch (NoSuchElementException)
+                    //{
+                    //    Console.WriteLine("NoSuchElementException");
+                    //}
+                    //foreach (IWebElement temp in tt)
+                    //    luserIconUrl = temp.FindElement(By.TagName("img")).GetAttribute("src");
+
+                    Content n = new Content()
+                    {
+                        num = y.FindElement(By.ClassName("gall_num")).Text,
+                        url = y.FindElement(By.TagName("a")).GetAttribute("href"),
+                        title = y.FindElement(By.TagName("a")).Text,
+                        userName = y.FindElement(By.ClassName("nickname")).GetAttribute("title"),
+                        userIconUrl = luserIconUrl
+                    };
+
+                    VM.oContentList.InsertRow(n);
+                }
+                VM.oContentList.OnPropertyChanged();
+
+                //Thread.Sleep(500);
+                await Task.Delay(500);
+
+            } catch
+            {
+                ;
+            }
+            
+        }
+    }
+
+
+}
+
+

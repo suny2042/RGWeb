@@ -1,0 +1,86 @@
+﻿@page "/UserPage"
+@*〈공통〉*@
+@implements IDisposable
+@inject IJSRuntime JS               // 자바스크립트 관련
+@inject ProtectedLocalStorage LS    // 로컬스토리지 관련
+@inject NavigationManager NM        // 페이지 이동 관련
+@* 뷰모델의 인스턴스 주입 *@
+@inject RGWeb.ViewModels.IContentViewModel VM
+@using static RGWeb.Models.ContentModel
+
+<h3>UserPage</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        VM.oContentList.PropertyChanged += async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        };
+
+        await base.OnInitializedAsync();
+    }
+
+    async void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    // 메모리 누수 방지
+    public void Dispose()
+    {
+        VM.oContentList.PropertyChanged -= OnPropertyChangedHandler;
+    }
+
+    // 페이지가 로드 될 시 (비동기)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) // 첫번째 렌더때 실행
+        {
+            ;
+        }
+        else             // 첫번째 렌더 후에 실행
+        {
+            ;
+        }
+    }
+
+    string iframeUrl = "ContentBlankPage";
+
+    private void fnUrlClickEvent(string? pUrl)
+    {
+        iframeUrl = pUrl;
+    }
+}
+
+
+<SfSplitter Height="700px" Width="100%" SeparatorSize="3">
+    <SplitterPanes>
+        <SplitterPane Size="20%" Collapsible="true" CssClass="p-1">
+            <ContentTemplate>
+                <div class="d-flex flex-column m-0">
+                    @if (VM.oContentList.dataSet is not null)
+                    {
+                        foreach (Content item in VM.oContentList.dataSet)
+                        {
+                            <ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></ContentComponent>
+                        }
+                    }
+                </div>
+            </ContentTemplate>
+        </SplitterPane>
+        <SplitterPane>
+            <ContentTemplate>
+                <div class="d-flex rounded w-100 h-100">
+                    <iframe id="userIframe" class="w-100 h-100" allowfullscreen></iframe>
+                </div>
+            </ContentTemplate>
+        </SplitterPane>
+    </SplitterPanes>
+</SfSplitter>

@@ -1,0 +1,21 @@
+{
+  "DBConnection": {
+    "DBType": "Oracle",
+    "ODBC": "DRIVER={MariaDB ODBC 3.0 Driver};SERVER=192.168.0.201;DATABASE=samis_home;UID=root;PASSWORD=1111;Connection Timeout=30;Min Pool Size=0;Max Pool Size=100;Pooling=true;",
+    "OleDB": "Provider=MSDAORA.1;Data Source=KENO_DEV;User ID=xxx;Password=xxx;Persist Security Info=True;",
+    // 현재 Oracle를 사용함
+    "Oracle": "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.0.203)(PORT=20444))(CONNECT_DATA=(SERVICE_NAME=orcl)));User Id=xxx;Password=xxx;"
+  },
+  "Log": {
+    // Debug 작성여부
+    "DebugWrite": "Y",
+    // Debug 경로
+    "DebugPath": "C:\\SMFCWeb\\SPAEONCareWeb\\SPAEONCareWeb\\Debug",
+    // Log 작성여부
+    "LogWrite": "Y",
+    // 기본Log작성여부(DBService에서 사용)
+    "InfoLogWrite": "Y",
+    // Log 경로
+    "LogPath": "C:\\SMFCWeb\\SPAEONCareWeb\\SPAEONCareWeb\\Log"
+  }
+}
