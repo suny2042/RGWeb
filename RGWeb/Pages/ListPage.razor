@@ -12,13 +12,19 @@
 @using OpenQA.Selenium;
 @using OpenQA.Selenium.Firefox;
 
+<h3>Server</h3>
+
 <button @onclick="ServerStart">button</button>
+<SfSwitch TChecked="bool" ValueChange="serverOnoff_ValueChange">
+    
+</SfSwitch>
 
 @code {
     protected List<FirefoxDriverService> driverService = new List<FirefoxDriverService>();
     protected FirefoxOptions options;
     protected List<FirefoxDriver> driver = new List<FirefoxDriver>();
     private int pageLength = 3;
+    private bool serverOnoff = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,11 +57,7 @@
         for (int i = 0; i < VM.oContentList.Count; i++)
             VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
 
-        for (int i = 0; i < pageLength; i++)
-            if (driver is not null && driver.Count > 0 && driver[i] is not null)
-                driver[i].Quit();
-
-        Console.WriteLine("Server Dispose");
+        ServerEnd();
     }
 
     // 페이지가 로드 될 시 (비동기)
@@ -69,6 +71,15 @@
         {
             ;
         }
+    }
+
+    private void serverOnoff_ValueChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
+    {
+        serverOnoff = args.Checked;
+        if (serverOnoff)
+            ServerStart();
+        else
+            ServerEnd();
     }
 
     // 페이지의 시작
@@ -96,10 +107,22 @@
             driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0); // 탐색시 object가 없으면 대기하는 시간.
         }
-        
+
         ListRefresh(0, "https://gall.dcinside.com/board/lists/?id=baseball_new10");
         ListRefresh(1, "https://gall.dcinside.com/board/lists/?id=comic_new3");
         ListRefresh(2, "https://gall.dcinside.com/board/lists?id=stream_new1");
+    }
+
+    public async Task ServerEnd()
+    {
+        for (int i = 0; i < pageLength; i++)
+            if (driver is not null && driver.Count > 0 && driver[i] is not null)
+            {
+                driver[i].Quit();
+                driverService[i].Dispose();
+            }
+
+        Console.WriteLine("Server Dispose");
     }
 
     private async Task ListRefresh(int pPageNumber, string pPageUrl)
@@ -120,8 +143,14 @@
 
             IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.CssSelector("tr[class='ub-content us-post']"));
             VM.oContentList[pPageNumber].ClearDataset();
+
+            int findCount = 0;
             foreach(IWebElement y in x)
             {
+                findCount++;
+                if (findCount >= 20)
+                    break;
+
                 string lUserIconUrl = "";
                 try
                 {
@@ -156,7 +185,7 @@
                         contentIconUrl = y.FindElement(By.CssSelector("td[class='gall_tit ub-word']")).FindElement(By.TagName("a")).FindElement(By.TagName("em")).GetAttribute("class"),
                         commentCount = lCommentCount,
                     };
-                    
+
                     VM.oContentList[pPageNumber].InsertRow(n);
                 } catch {}
             }

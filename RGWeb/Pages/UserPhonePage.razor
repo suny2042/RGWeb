@@ -1,4 +1,4 @@
-﻿@page "/UserPage"
+﻿@page "/UserPhonePage"
 @*〈공통〉*@
 @implements IDisposable
 @inject IJSRuntime JS               // 자바스크립트 관련
@@ -11,10 +11,10 @@
 
 @code {
     private int pageLength = 3;
-    private int selectPageLength = 2;
+    private int selectPageLength = 1;
     private List<int> selectPage = new List<int>()
     {
-        0, 2
+        0
     };
 
 
@@ -33,28 +33,22 @@
     {
         selectPage_ValueChange(0, args);
     }
-    private void selectPage_1_ValueChange(ChangeEventArgs<int, PageType> args)
-    {
-        selectPage_ValueChange(1, args);
-    }
     private void selectPage_ValueChange(int pSelectPage, ChangeEventArgs<int, PageType> args)
     {
         if (VM.oContentList.Count > 0)
-            //for (int i = 0; i < pageLength; i++)
-                VM.oContentList[pSelectPage].PropertyChanged -= OnPropertyChangedHandler;
+            VM.oContentList[pSelectPage].PropertyChanged -= OnPropertyChangedHandler;
 
         // 콤보박스에서 갤러리 선택
         selectPage[pSelectPage] = args.Value;
 
         if (VM.oContentList.Count > 0)
-            //for (int i = 0; i < pageLength; i++)
-                VM.oContentList[pSelectPage].PropertyChanged += async (sender, e) =>
+            VM.oContentList[pSelectPage].PropertyChanged += async (sender, e) =>
+            {
+                await InvokeAsync(() =>
                 {
-                    await InvokeAsync(() =>
-                    {
-                        StateHasChanged();
-                    });
-                };
+                    StateHasChanged();
+                });
+            };
     }
 
     protected override async Task OnInitializedAsync()
@@ -113,16 +107,17 @@
 }
 
 
-<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded">
+<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
     <SplitterPanes>
-        <SplitterPane Size="250px" Collapsible="true" CssClass="p-1">
+        <SplitterPane Collapsible="true">
             <ContentTemplate>
-                <div class="d-block">
-                    <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
-                        <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                        <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
-                    </SfComboBox>
+                <div class="d-flex rounded w-100 h-100">
+                    <iframe id="userIframe" class="w-100 h-100" allowfullscreen></iframe>
                 </div>
+            </ContentTemplate>
+        </SplitterPane>
+        <SplitterPane Size="400px" Collapsible="false" CssClass="p-1">
+            <ContentTemplate>
                 <div class="d-flex flex-column m-0">
                     @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null)
                     {
@@ -134,30 +129,12 @@
                 </div>
             </ContentTemplate>
         </SplitterPane>
-        <SplitterPane Size="250px" Collapsible="true" CssClass="p-1">
+        <SplitterPane Size="30px" Collapsible="false">
             <ContentTemplate>
-                <div class="d-block">
-                    <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
-                        <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                        <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
-                    </SfComboBox>
-                </div>
-                <div class="d-flex flex-column m-0">
-                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null)
-                    {
-                        foreach (Content item in VM.oContentList[selectPage[1]].dataSet)
-                        {
-                            <RGWeb.Component.ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
-                        }
-                    }
-                </div>
-            </ContentTemplate>
-        </SplitterPane>
-        <SplitterPane>
-            <ContentTemplate>
-                <div class="d-flex rounded w-100 h-100">
-                    <iframe id="userIframe" class="w-100 h-100" allowfullscreen></iframe>
-                </div>
+                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
+                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
+                </SfComboBox>
             </ContentTemplate>
         </SplitterPane>
     </SplitterPanes>
