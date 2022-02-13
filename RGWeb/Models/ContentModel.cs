@@ -29,13 +29,21 @@
             /// </summary>
             public string userIconUrl { get; set; }
             /// <summary>
+            /// 게시글 유형 아이콘 Url
+            /// </summary>
+            public string contentIconUrl { get; set; }
+            /// <summary>
+            /// 게시글 조회 수
+            /// </summary>
+            public string viewCount { get; set; }
+            /// <summary>
             /// 게시글 추천 수
             /// </summary>
-            public int goodCount { get; set; }
+            public string goodCount { get; set; }
             /// <summary>
             /// 게시글 코멘트 수
             /// </summary>
-            public int comment { get; set; }
+            public string commentCount { get; set; }
             /// <summary>
             /// 게시글 작성일/시간
             /// </summary>

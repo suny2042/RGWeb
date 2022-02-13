@@ -1,0 +1,86 @@
+﻿@inject IJSRuntime JS               // 자바스크립트 관련
+@using static RGWeb.Models.ContentModel
+
+@code {
+    [Parameter]
+    public Content? pContent { get; set; }
+
+    [Parameter]
+    public Action<string?> onUrlClickEvent { get; set; } // 부모 컴포넌트에서 변경 이벤트 캐치
+
+    private DateTime Now = DateTime.Now;
+
+    private async Task onContent_onclick()
+    {
+        //onUrlClickEvent?.Invoke(pContent.url);
+        JS.InvokeVoidAsync("JS_goToIframe", pContent.url);
+    }
+}
+
+<div class="rounded border p-1" @onclick="onContent_onclick">
+
+    <div class="d-block">
+        <div class="d-flex flex-row">
+            <div class="ListContentTopFont" style="text-overflow:ellipsis; white-space:nowrap; overflow: hidden;">
+                <em class="@(pContent.contentIconUrl)"></em>@(pContent.title)
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex flex-row-reverse">
+                    <div class="">
+                        @pContent.commentCount
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="d-block ListContentBottomFont">
+        <div class="d-flex flex-row-reverse align-items-center">
+            <div class="ps-1">
+                @((pContent.date.Hour).ToString().PadLeft(2, '0')):@((pContent.date.Minute).ToString().PadLeft(2, '0')):@((pContent.date.Second).ToString().PadLeft(2, '0'))
+            </div>
+            <div class="ps-1">
+                @if(((Now.Month * 100) + Now.Day) != ((pContent.date.Month * 100) + pContent.date.Day))
+                {
+                    <p class="m-0">@((pContent.date.Month).ToString().PadLeft(2, '0'))-@((pContent.date.Day).ToString().PadLeft(2, '0'))</p>
+                }
+            </div>
+            <div class="">
+                @if(Now.Year != pContent.date.Year)
+                {
+                    <p class="m-0">@((pContent.date.Year).ToString().PadLeft(2, '0'))</p>
+                }
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex flex-row align-items-center">
+                    <div class="pe-1" style="min-width: 35px;">
+                        <i class="fa-solid fa-eye"></i>&nbsp;@(pContent.viewCount)
+                    </div>
+                    <div class="pe-1" style="min-width: 27px;">
+                        <i class="fa-solid fa-star"></i>&nbsp;
+                        @if(pContent.goodCount == "0")
+                        {
+                            <span>&nbsp;</span>
+                        }
+                        else if (int.Parse(pContent.goodCount) >= 5)
+                        {
+                            <span class="ListContentGoodCountFont">@(pContent.goodCount)</span>
+                        }
+                        else
+                        {
+                            <span>@(pContent.goodCount)</span>
+                        }
+                    </div>
+                    <div class="pe-1">
+                        |
+                    </div>
+                    <div class="" style="text-overflow:ellipsis; white-space:nowrap; overflow: hidden;">
+                        @pContent.userName&nbsp;<img src="@(pContent.userIconUrl)" /><span>@(pContent.userIp)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

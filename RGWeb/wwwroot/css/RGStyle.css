@@ -1,7 +1,13 @@
-﻿.ListContentTopFontSize {
+﻿.ListContentTopFont {
     font-size: 0.9rem;
+    color: #ffffff;
 }
 
-.ListContentBottomFontSize {
-    font-size: 0.7rem;
+.ListContentBottomFont {
+    font-size: 0.6rem;
+    color: #999;
+}
+
+.ListContentGoodCountFont {
+    color: #0080FF;
 }
