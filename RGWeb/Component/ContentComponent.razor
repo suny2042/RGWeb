@@ -40,7 +40,7 @@
             <div class="ps-1">
                 @((pContent.date.Hour).ToString().PadLeft(2, '0')):@((pContent.date.Minute).ToString().PadLeft(2, '0')):@((pContent.date.Second).ToString().PadLeft(2, '0'))
             </div>
-            <div class="ps-1">
+            <div class="ps-1" style="white-space:nowrap;">
                 @if(((Now.Month * 100) + Now.Day) != ((pContent.date.Month * 100) + pContent.date.Day))
                 {
                     <p class="m-0">@((pContent.date.Month).ToString().PadLeft(2, '0'))-@((pContent.date.Day).ToString().PadLeft(2, '0'))</p>
@@ -54,10 +54,10 @@
             </div>
             <div class="flex-grow-1">
                 <div class="d-flex flex-row align-items-center">
-                    <div class="pe-1" style="min-width: 35px;">
+                    <div class="pe-1" style="min-width: 35px; white-space:nowrap;">
                         <i class="fa-solid fa-eye"></i>&nbsp;@(pContent.viewCount)
                     </div>
-                    <div class="pe-1" style="min-width: 27px;">
+                    <div class="pe-1" style="min-width: 27px; white-space:nowrap;">
                         <i class="fa-solid fa-star"></i>&nbsp;
                         @if(pContent.goodCount == "0")
                         {
