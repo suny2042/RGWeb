@@ -1,4 +1,4 @@
-﻿@page "/ListPage"
+﻿@page "/adm/ListPage"
 @*〈공통〉*@
 @implements IDisposable
 @inject IJSRuntime JS               // 자바스크립트 관련
@@ -14,10 +14,11 @@
 
 <h3>Server</h3>
 
-<button @onclick="ServerStart">button</button>
-<SfSwitch TChecked="bool" ValueChange="serverOnoff_ValueChange">
+<div class="d-flex align-items-center">
+    Server Start&nbsp;<SfSwitch @ref="serverSwitch" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>
+</div>
     
-</SfSwitch>
+
 
 @code {
     protected List<FirefoxDriverService> driverService = new List<FirefoxDriverService>();
@@ -25,6 +26,7 @@
     protected List<FirefoxDriver> driver = new List<FirefoxDriver>();
     private int pageLength = 3;
     private bool serverOnoff = false;
+    SfSwitch<bool> serverSwitch;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,6 +78,7 @@
     private void serverOnoff_ValueChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {
         serverOnoff = args.Checked;
+
         if (serverOnoff)
             ServerStart();
         else

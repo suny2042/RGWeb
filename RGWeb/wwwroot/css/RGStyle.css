@@ -1,6 +1,6 @@
 ﻿.ListContentTopFont {
     font-size: 0.9rem;
-    color: #ffffff;
+    color: #000000;
 }
 
 .ListContentBottomFont {
@@ -10,4 +10,18 @@
 
 .ListContentGoodCountFont {
     color: #0080FF;
+}
+
+
+@media (prefers-color-scheme: dark) {
+    /* 다크 모드에 적용할 스타일 정의 */
+    .ListContentTopFont {
+        font-size: 0.9rem;
+        color: #ffffff;
+    }
+
+    .ListContentBottomFont {
+        font-size: 0.6rem;
+        color: #999;
+    }
 }
