@@ -16,6 +16,6 @@ namespace RGWeb.ViewModels
 
         #endregion
 
-        ModelDataSet<Content> oContentList { get; set; }
+        List<ModelDataSet<Content>> oContentList { get; set; }
     }
 }

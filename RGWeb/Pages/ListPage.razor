@@ -7,23 +7,32 @@
 @* 뷰모델의 인스턴스 주입 *@
 @inject RGWeb.ViewModels.IContentViewModel VM
 @using static RGWeb.Models.ContentModel
+@using RGWeb.ViewModels
 
 @using OpenQA.Selenium;
 @using OpenQA.Selenium.Firefox;
 
-<h3>ListPage @kkk</h3>
-<button @onclick="PageFirstStart">button</button>
+<button @onclick="ServerStart">button</button>
 
 @code {
+    protected List<FirefoxDriverService> driverService = new List<FirefoxDriverService>();
+    protected FirefoxOptions options;
+    protected List<FirefoxDriver> driver = new List<FirefoxDriver>();
+    private int pageLength = 3;
+
     protected override async Task OnInitializedAsync()
     {
-        VM.oContentList.PropertyChanged += async (sender, e) =>
-        {
-            await InvokeAsync(() =>
+        for (int i = 0; i < pageLength; i++)
+            VM.oContentList.Add(new ModelDataSet<Content>());
+
+        for (int i = 0; i < VM.oContentList.Count; i++)
+            VM.oContentList[i].PropertyChanged += async (sender, e) =>
             {
-                StateHasChanged();
-            });
-        };
+                await InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            };
 
         await base.OnInitializedAsync();
     }
@@ -39,10 +48,14 @@
     // 메모리 누수 방지
     public void Dispose()
     {
-        VM.oContentList.PropertyChanged -= OnPropertyChangedHandler;
+        for (int i = 0; i < VM.oContentList.Count; i++)
+            VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
 
-        if (driver is not null)
-            driver.Quit();
+        for (int i = 0; i < pageLength; i++)
+            if (driver is not null && driver.Count > 0 && driver[i] is not null)
+                driver[i].Quit();
+
+        Console.WriteLine("Server Dispose");
     }
 
     // 페이지가 로드 될 시 (비동기)
@@ -58,80 +71,75 @@
         }
     }
 
-    protected FirefoxDriverService driverService;
-    protected FirefoxOptions options;
-    protected FirefoxDriver driver;
-
-    string kkk = "kkk";
-
     // 페이지의 시작
-    public async Task PageFirstStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
+    public async Task ServerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
     {
-        if (driver is not null)
-            driver.Quit();
+        for (int i = 0; i < pageLength; i++)
+            if (driver is not null && driver.Count > 0 && driver[i] is not null)
+                driver[i].Quit();
 
         // System.IO.Directory.GetCurrentDirectory() + @"\bin\Debug\net6.0\"
-        driverService = FirefoxDriverService.CreateDefaultService();
         //driverService.HideCommandPromptWindow = true;
-        driverService.Port = 4444;
+        //driverService.Port = 4444;
         options = new FirefoxOptions();
         //options.AddArgument("-window-size=1920x1080");
         options.AddArgument("-headless");
         options.AddArgument("-disable-gpu");
-        driver = new FirefoxDriver(driverService, options);
-
-        driver.Navigate().GoToUrl("https://gall.dcinside.com/board/lists/?id=baseball_new10");
-        //driver.Navigate().GoToUrl("https://gall.dcinside.com/board/lists/?id=comic_new3");
-        driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
-        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0); // 탐색시 object가 없으면 대기하는 시간.
 
         //Thread myThread = new Thread(ListRefresh); 
         //myThread.Start(); 
-        ListRefresh();
+        for (int i = 0; i < pageLength; i++)
+        {
+            driverService.Add(FirefoxDriverService.CreateDefaultService());
+            driverService[i].Port = 44000 + i;
+            driver.Add(new FirefoxDriver(driverService[i], options));
+            driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
+            driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0); // 탐색시 object가 없으면 대기하는 시간.
+        }
+        
+        ListRefresh(0, "https://gall.dcinside.com/board/lists/?id=baseball_new10");
+        ListRefresh(1, "https://gall.dcinside.com/board/lists/?id=comic_new3");
+        ListRefresh(2, "https://gall.dcinside.com/board/lists?id=stream_new1");
     }
 
-    private async Task ListRefresh()
+    private async Task ListRefresh(int pPageNumber, string pPageUrl)
     {
-        Console.WriteLine("[ListRefresh] Start");
+        Console.WriteLine("[ListRefresh " + pPageNumber + "] Start : " + pPageUrl);
+
         while(true)
         {
-            Console.WriteLine("[while] Start");
-            //driver.Navigate().Refresh();
+            Console.WriteLine("[while " + pPageNumber + "] Start");
             try
             {
-                driver.Navigate().GoToUrl("https://gall.dcinside.com/board/lists/?id=baseball_new10");
+                //driver.Navigate().Refresh();
+                driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
             } catch
             {
                 await Task.Delay(10);
             }
 
-            Console.WriteLine("[FindElement] x");
-            IReadOnlyCollection<IWebElement> x = driver.FindElements(By.CssSelector("tr[class='ub-content us-post']"));
-            VM.oContentList.ClearDataset();
+            IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.CssSelector("tr[class='ub-content us-post']"));
+            VM.oContentList[pPageNumber].ClearDataset();
             foreach(IWebElement y in x)
             {
-                Console.WriteLine("[FindElement] lUserIconUrl");
                 string lUserIconUrl = "";
                 try
                 {
                     lUserIconUrl = y.FindElement(By.CssSelector("a[class='writer_nikcon']")).FindElement(By.TagName("img")).GetAttribute("src");
                 } catch {}
 
-                Console.WriteLine("[FindElement] lUserIp");
                 string lUserIp = "";
                 try
                 {
                     lUserIp = y.FindElement(By.CssSelector("span[class='ip']")).Text;
                 } catch {}
 
-                Console.WriteLine("[FindElement] lCommentCount");
                 string lCommentCount = "";
                 try
                 {
                     lCommentCount = y.FindElement(By.CssSelector("a[class='reply_numbox']")).FindElement(By.CssSelector("span[class='reply_num']")).Text;
                 } catch {}
 
-                Console.WriteLine("[FindElement] new");
                 try
                 {
                     Content n = new Content()
@@ -148,16 +156,15 @@
                         contentIconUrl = y.FindElement(By.CssSelector("td[class='gall_tit ub-word']")).FindElement(By.TagName("a")).FindElement(By.TagName("em")).GetAttribute("class"),
                         commentCount = lCommentCount,
                     };
-                    Console.WriteLine("[FindElement] new end");
-
-                    VM.oContentList.InsertRow(n);
+                    
+                    VM.oContentList[pPageNumber].InsertRow(n);
                 } catch {}
             }
-            VM.oContentList.OnPropertyChanged();
+            VM.oContentList[pPageNumber].OnPropertyChanged();
 
-            Console.WriteLine("[while] End");
+            Console.WriteLine("[while " + pPageNumber + "] End");
             //Thread.Sleep(500);
-            await Task.Delay(500);
+            await Task.Delay(100);
         }
     }
 

@@ -10,16 +10,58 @@
 
 <h3>UserPage</h3>
 
+<div class="d-block" style="max-width: 200px;">
+    <SfComboBox Value="@selectPage" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
+        <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+        <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_ValueChange"></ComboBoxEvents>
+    </SfComboBox>
+</div>
+
 @code {
+    private int pageLength = 3;
+    private int selectPage = 2;
+
+    public class PageType
+    {
+        public int Value { get; set; }
+        public string Text { get; set; }
+    }
+    List<PageType> PageTypeComboBoxList = new List<PageType>
+    {
+        new PageType() { Value = 0, Text = "국내야구" },
+        new PageType() { Value = 1, Text = "만화" },
+        new PageType() { Value = 2, Text = "스트리머" },
+    };
+    private void selectPage_ValueChange(ChangeEventArgs<int, PageType> args)
+    {
+        if (VM.oContentList.Count > 0)
+            for (int i = 0; i < pageLength; i++)
+                VM.oContentList[selectPage].PropertyChanged -= OnPropertyChangedHandler;
+
+        // 콤보박스에서 갤러리 선택
+        selectPage = args.Value;
+
+        if (VM.oContentList.Count > 0)
+            for (int i = 0; i < pageLength; i++)
+                VM.oContentList[selectPage].PropertyChanged += async (sender, e) =>
+                {
+                    await InvokeAsync(() =>
+                    {
+                        StateHasChanged();
+                    });
+                };
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        VM.oContentList.PropertyChanged += async (sender, e) =>
-        {
-            await InvokeAsync(() =>
+        if (VM.oContentList.Count > 0)
+            VM.oContentList[selectPage].PropertyChanged += async (sender, e) =>
             {
-                StateHasChanged();
-            });
-        };
+                await InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            };
 
         await base.OnInitializedAsync();
     }
@@ -35,7 +77,8 @@
     // 메모리 누수 방지
     public void Dispose()
     {
-        VM.oContentList.PropertyChanged -= OnPropertyChangedHandler;
+        if (VM.oContentList.Count > 0)
+            VM.oContentList[selectPage].PropertyChanged -= OnPropertyChangedHandler;
     }
 
     // 페이지가 로드 될 시 (비동기)
@@ -65,9 +108,9 @@
         <SplitterPane Size="20%" Collapsible="true" CssClass="p-1">
             <ContentTemplate>
                 <div class="d-flex flex-column m-0">
-                    @if (VM.oContentList.dataSet is not null)
+                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage].dataSet is not null)
                     {
-                        foreach (Content item in VM.oContentList.dataSet)
+                        foreach (Content item in VM.oContentList[selectPage].dataSet)
                         {
                             <RGWeb.Component.ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
                         }
