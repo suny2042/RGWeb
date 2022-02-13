@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://192.168.0.101:41000",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:41612",
       "sslPort": 44362
@@ -10,12 +14,13 @@
   "profiles": {
     "RGWeb": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7188;http://localhost:5188",
+      "launchUrl": "http://192.168.0.101:7188",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://192.168.0.101:7188;http://localhost:5188",
+      "dotnetRunMessages": true
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -23,6 +28,19 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "프로필 1": {
+      "commandName": "IIS"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "launchBrowser": true,
+      "launchUrl": "https://192.168.0.101:7188/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://192.168.0.101:7188;http://localhost:5188"
+      },
+      "distributionName": ""
     }
   }
 }
