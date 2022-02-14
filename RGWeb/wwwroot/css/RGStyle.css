@@ -31,4 +31,25 @@
         font-size: 0.6rem;
         color: #999;
     }
+
+    .RGBorderColor {
+        border-color: #424348 !important;
+    }
+    /* 분할 조절기 바 */
+    .e-splitter .e-split-bar {
+        background-color: #424348 !important;
+    }
+
+    /* 콤보박스 */
+    .e-splitter .e-split-bar .e-resize-handler {
+        background-color: #303030 !important;
+    }
+    .e-input-group, .e-input-group.e-control-wrapper, .e-float-input, .e-float-input.e-input-group, .e-float-input.e-control-wrapper, .e-float-input.e-input-group.e-control-wrapper {
+        background-color: #202124 !important;
+        color: #ffffff !important;
+        border-color: #424348 !important;
+    }
+    .e-input-group .e-input-group-icon, .e-input-group.e-control-wrapper .e-input-group-icon {
+        border-color: #424348 !important;
+    }
 }
