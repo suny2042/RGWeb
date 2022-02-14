@@ -15,11 +15,11 @@
     "RGWeb": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://192.168.0.101:7188",
+      "launchUrl": "http://192.168.0.82:7188",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://192.168.0.101:7188;http://localhost:5188",
+      "applicationUrl": "http://192.168.0.82:7188;http://localhost:5188",
       "dotnetRunMessages": true
     },
     "IIS Express": {

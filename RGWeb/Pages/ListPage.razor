@@ -140,10 +140,7 @@
             {
                 //driver.Navigate().Refresh();
                 driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
-            } catch
-            {
-                await Task.Delay(10);
-            }
+            } catch { }
 
             IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.CssSelector("tr[class='ub-content us-post']"));
             VM.oContentList[pPageNumber].ClearDataset();
@@ -191,12 +188,15 @@
                     };
 
                     VM.oContentList[pPageNumber].InsertRow(n);
-                } catch {}
+                } catch
+                {
+                    Console.WriteLine("[while " + pPageNumber + "] new Content Fail");
+                    continue;
+                }
             }
-            VM.oContentList[pPageNumber].OnPropertyChanged();
+            VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
 
             Console.WriteLine("[while " + pPageNumber + "] End");
-            //Thread.Sleep(500);
             await Task.Delay(100);
         }
     }
