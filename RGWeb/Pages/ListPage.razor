@@ -172,18 +172,19 @@
 
                 try
                 {
+                    IWebElement lTopLabel = y.FindElement(By.ClassName("gall_tit")).FindElement(By.TagName("a")); // gall_tit만 해야함. 마이크 아이콘이 있을 수 있음
                     Content n = new Content()
                     {
                         num = y.FindElement(By.ClassName("gall_num")).Text,
-                        url = y.FindElement(By.CssSelector("td[class='gall_tit ub-word']")).FindElement(By.TagName("a")).GetAttribute("href"),
-                        title = y.FindElement(By.CssSelector("td[class='gall_tit ub-word']")).FindElement(By.TagName("a")).Text,
+                        url = lTopLabel.GetAttribute("href"),
+                        title = lTopLabel.Text,
                         userName = y.FindElement(By.ClassName("nickname")).GetAttribute("title"),
                         viewCount = y.FindElement(By.ClassName("gall_count")).Text,
                         goodCount = y.FindElement(By.ClassName("gall_recommend")).Text,
                         date = StrToDate(y.FindElement(By.ClassName("gall_date")).GetAttribute("title")),
                         userIconUrl = lUserIconUrl,
                         userIp = lUserIp,
-                        contentIconUrl = y.FindElement(By.CssSelector("td[class='gall_tit ub-word']")).FindElement(By.TagName("a")).FindElement(By.TagName("em")).GetAttribute("class"),
+                        contentIconUrl = lTopLabel.FindElement(By.TagName("em")).GetAttribute("class"),
                         commentCount = lCommentCount,
                     };
 

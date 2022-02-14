@@ -113,7 +113,7 @@
 }
 
 
-<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded">
+<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor">
     <SplitterPanes>
         <SplitterPane Size="250px" Collapsible="true" CssClass="p-1">
             <ContentTemplate>
@@ -122,7 +122,7 @@
                         <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
                         <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
                     </SfComboBox>
-                    <hr class="my-1" />
+                    <hr class="my-1 RGBorderColor" />
                 </div>
                 <div class="d-flex flex-column m-0">
                     @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null)
@@ -142,7 +142,7 @@
                         <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
                         <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
                     </SfComboBox>
-                    <hr class="my-1" />
+                    <hr class="my-1 RGBorderColor" />
                 </div>
                 <div class="d-flex flex-column m-0">
                     @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null)
@@ -155,7 +155,7 @@
                 </div>
             </ContentTemplate>
         </SplitterPane>
-        <SplitterPane>
+        <SplitterPane CssClass="p-1">
             <ContentTemplate>
                 <div class="d-flex rounded w-100 h-100">
                     <iframe id="userIframe" class="w-100 h-100" sandbox="allow-forms allow-modals allow-popups allow-scripts allow-same-origin allow-pointer-lock allow-presentation allow-top-navigation allow-storage-access-by-user-activation"></iframe>
