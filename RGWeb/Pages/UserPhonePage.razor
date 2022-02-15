@@ -40,13 +40,13 @@
     private void selectPage_ValueChange(int pSelectPage, ChangeEventArgs<int, PageType> args)
     {
         if (VM.oContentList.Count > 0)
-            VM.oContentList[pSelectPage].PropertyChanged -= OnPropertyChangedHandler;
+            VM.oContentList[selectPage[pSelectPage]].PropertyChanged -= OnPropertyChangedHandler;
 
         // 콤보박스에서 갤러리 선택
         selectPage[pSelectPage] = args.Value;
 
         if (VM.oContentList.Count > 0)
-            VM.oContentList[pSelectPage].PropertyChanged += async (sender, e) =>
+            VM.oContentList[selectPage[pSelectPage]].PropertyChanged += async (sender, e) =>
             {
                 await InvokeAsync(() =>
                 {
