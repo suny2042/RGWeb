@@ -101,6 +101,7 @@
         //options.AddArgument("-disable-gpu");
         //options.AddArgument("-disable-images");
         //options.SetPreference("profile.default_content_setting_values.images", 2);
+        options.AddArgument("--log-level=3");
         options.AddArgument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
         //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
         //options.Profile = profile;
@@ -114,6 +115,7 @@
         {
             driverService.Add(ChromeDriverService.CreateDefaultService());
             driverService[i].Port = 44000 + i;
+            //driverService[i].SuppressInitialDiagnosticInformation = true;
             driver.Add(new ChromeDriver(driverService[i], options));
             //driver[i].ExecuteScript("return navigator.userAgent;");
             driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
