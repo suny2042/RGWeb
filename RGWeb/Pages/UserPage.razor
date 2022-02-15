@@ -10,11 +10,21 @@
 
 
 @code {
+    // 지원되는 갤러리 최대 수
     private int pageLength = 3;
+    // 동시에 볼 수 있는 페이지 수
     private int selectPageLength = 2;
+    // 현재 선택한 페이지 수들
     private List<int> selectPage = new List<int>()
     {
         0, 2
+    };
+    // 방문한 페이지
+    private List<Dictionary<int, bool>> visitedPage = new List<Dictionary<int, bool>>()
+    {
+        new Dictionary<int, bool>(),
+        new Dictionary<int, bool>(),
+        new Dictionary<int, bool>(),
     };
 
 
@@ -40,21 +50,20 @@
     private void selectPage_ValueChange(int pSelectPage, ChangeEventArgs<int, PageType> args)
     {
         if (VM.oContentList.Count > 0)
-            //for (int i = 0; i < pageLength; i++)
-                VM.oContentList[selectPage[pSelectPage]].PropertyChanged -= OnPropertyChangedHandler;
+            VM.oContentList[selectPage[pSelectPage]].PropertyChanged -= OnPropertyChangedHandler;
 
         // 콤보박스에서 갤러리 선택
         selectPage[pSelectPage] = args.Value;
 
         if (VM.oContentList.Count > 0)
-            //for (int i = 0; i < pageLength; i++)
-                VM.oContentList[selectPage[pSelectPage]].PropertyChanged += async (sender, e) =>
+            VM.oContentList[selectPage[pSelectPage]].PropertyChanged += async (sender, e) =>
+            {
+                await InvokeAsync(() =>
                 {
-                    await InvokeAsync(() =>
-                    {
-                        StateHasChanged();
-                    });
-                };
+                    CleanVisitedPage();
+                    StateHasChanged();
+                });
+            };
     }
 
     protected override async Task OnInitializedAsync()
@@ -66,11 +75,12 @@
                 {
                     await InvokeAsync(() =>
                     {
+                        CleanVisitedPage();
                         StateHasChanged();
                     });
                 };
         }
-        
+
 
         await base.OnInitializedAsync();
     }
@@ -106,9 +116,23 @@
 
     string iframeUrl = "ContentBlankPage";
 
-    private void fnUrlClickEvent(string? pUrl)
+    private void fnUrlClickEvent(int pSelectPage, int pNumber)
     {
-        iframeUrl = pUrl;
+        if (!visitedPage[selectPage[pSelectPage]].ContainsKey(pNumber))
+            visitedPage[selectPage[pSelectPage]].Add(pNumber, true);
+    }
+
+    private void CleanVisitedPage()
+    {
+        if (VM.oContentList.Count > 0)
+            for (int i = 0; i < pageLength; i++)
+            {
+                int lowest = VM.oContentList[i].dataSet[VM.oContentList[i].dataSet.Count - 1].num;
+
+                foreach (KeyValuePair<int, bool> item in visitedPage[i])
+                    if (item.Key < lowest)
+                        visitedPage[i].Remove(item.Key);
+            }
     }
 }
 
@@ -120,7 +144,7 @@
             <ContentTemplate>
                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                     <SplitterPanes>
-                        <SplitterPane Size="40px" Collapsible="true" CssClass="p-1">
+                        <SplitterPane Size="40px" CssClass="p-1">
                             <ContentTemplate>
                                 <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
                                     <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
@@ -131,11 +155,11 @@
                         <SplitterPane CssClass="p-1">
                             <ContentTemplate>
                                 <div class="d-flex flex-column m-0">
-                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null)
+                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null && visitedPage is not null)
                                     {
                                         foreach (Content item in VM.oContentList[selectPage[0]].dataSet)
                                         {
-                                            <RGWeb.Component.ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
                                         }
                                     }
                                 </div>
@@ -150,7 +174,7 @@
             <ContentTemplate>
                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                     <SplitterPanes>
-                        <SplitterPane Size="40px" Collapsible="true" CssClass="p-1">
+                        <SplitterPane Size="40px" CssClass="p-1">
                             <ContentTemplate>
                                 <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
                                     <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
@@ -161,11 +185,11 @@
                         <SplitterPane CssClass="p-1">
                             <ContentTemplate>
                                 <div class="d-flex flex-column m-0">
-                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null)
+                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null && visitedPage is not null)
                                     {
                                         foreach (Content item in VM.oContentList[selectPage[1]].dataSet)
                                         {
-                                            <RGWeb.Component.ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1" pVisited="visitedPage[selectPage[1]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
                                         }
                                     }
                                 </div>

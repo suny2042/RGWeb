@@ -16,6 +16,10 @@
     color: #0080FF;
 }
 
+.ListContentvisitedTitle {
+    color: mediumpurple;
+}
+
 /* 다크 모드에 적용할 스타일 정의 */
 @media (prefers-color-scheme: dark) {
     .RGBodyBackgroundColor {
@@ -30,6 +34,10 @@
     .ListContentBottomFont {
         font-size: 0.6rem;
         color: #999;
+    }
+
+    .ListContentvisitedTitle {
+        color: rebeccapurple;
     }
 
     .RGBorderColor {
@@ -53,7 +61,6 @@
         border-color: #424348 !important;
     }
 }
-
 
 
 
