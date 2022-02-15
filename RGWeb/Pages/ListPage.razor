@@ -101,7 +101,7 @@
         //options.AddArgument("-disable-gpu");
         //options.AddArgument("-disable-images");
         //options.SetPreference("profile.default_content_setting_values.images", 2);
-        //options.AddArgument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
+        options.AddArgument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
         //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
         //options.Profile = profile;
         //options.Profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
@@ -152,7 +152,7 @@
             } catch { }
 
             Console.WriteLine("[while " + pPageNumber + "] End");
-            await Task.Delay(100);
+            await Task.Delay(500);
             continue;
 
             IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.CssSelector("tr[class='ub-content us-post']"));
