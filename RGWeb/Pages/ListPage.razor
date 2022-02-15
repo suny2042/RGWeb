@@ -199,7 +199,7 @@
                         userName = lBottomLabel.ElementAt(0).Text,
                         viewCount = lBottomLabel.ElementAt(2).Text.Remove(0, 3),
                         goodCount = lBottomLabel.ElementAt(3).Text.Remove(0, 3),
-                        date = StrToDate(lBottomLabel.ElementAt(1).Text), //StrToDate(y.FindElement(By.ClassName("gall_date")).GetAttribute("title")),
+                        contentDate = lBottomLabel.ElementAt(1).Text, //StrToDate(y.FindElement(By.ClassName("gall_date")).GetAttribute("title")),
                         userIconUrl = lUserIconUrl,
                         userIp = lUserIp,
                         contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
