@@ -125,7 +125,7 @@
             //driverService[i].SuppressInitialDiagnosticInformation = true;
             driver.Add(new ChromeDriver(driverService[i], options));
             //driver[i].ExecuteScript("return navigator.userAgent;");
-            driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromMilliseconds(2000);   // 페이지 접속시 지정한 시간 이후까지 로드가 안되면 에러로 빠짐
+            driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromMilliseconds(3000);   // 페이지 접속시 지정한 시간 이후까지 로드가 안되면 에러로 빠짐
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);  // 탐색시 object가 없으면 대기하는 시간.
         }
 
