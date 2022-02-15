@@ -22,14 +22,14 @@
     <div class="d-block ListContentTopFont">
         <div class="d-flex flex-row">
             <div class="" style="text-overflow:ellipsis; white-space:nowrap; overflow: hidden;">
-                <em class="@(pContent.contentIconUrl)"></em>@(pContent.title)
+                <span class="@(pContent.contentIconUrl)"></span>@(pContent.title)
             </div>
             <div class="flex-grow-1">
                 <div class="d-flex flex-row-reverse">
                     <div>
                         @if(pContent.commentCount != "0")
                         {
-                            <span>@pContent.commentCount</span>
+                            <span>[@(pContent.commentCount)]</span>
                         }
                     </div>
                 </div>
@@ -40,7 +40,7 @@
     
     <div class="d-block ListContentBottomFont">
         <div class="d-flex flex-row-reverse align-items-center">
-            @if (string.IsNullOrEmpty(pContent.contentDate))
+            @if (!string.IsNullOrEmpty(pContent.contentDate))
             {
                 <div class="ps-1" style="white-space:nowrap;">
                     @(pContent.contentDate)

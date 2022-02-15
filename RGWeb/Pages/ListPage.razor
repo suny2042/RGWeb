@@ -98,7 +98,7 @@
         //driverService.Port = 4444;
         options = new ChromeOptions();
         options.AddArgument("-headless");
-        //options.AddArgument("-disable-gpu");
+        options.AddArgument("-disable-gpu");
         //options.AddArgument("-disable-images");
         //options.SetPreference("profile.default_content_setting_values.images", 2);
         options.AddArgument("--log-level=3");
@@ -109,6 +109,13 @@
         //ChromeProfile profile = new ChromeProfile();
         //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (Linux; Android 6.0; SAMSUNG SM-G930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/4.0 Chrome/44.0.2403.133 Mobile Safari/537.36");
 
+        // 성능개선대책
+        //options.AddArguments("enable-automation");
+        //options.AddArguments("--no-sandbox");
+        //options.AddArguments("--disable-extensions");
+        //options.AddArguments("--dns-prefetch-disable");
+
+
         //Thread myThread = new Thread(ListRefresh); 
         //myThread.Start(); 
         for (int i = 0; i < pageLength; i++)
@@ -118,14 +125,14 @@
             //driverService[i].SuppressInitialDiagnosticInformation = true;
             driver.Add(new ChromeDriver(driverService[i], options));
             //driver[i].ExecuteScript("return navigator.userAgent;");
-            driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
-            driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0); // 탐색시 object가 없으면 대기하는 시간.
+            driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromMilliseconds(2000);   // 페이지 접속시 지정한 시간 이후까지 로드가 안되면 에러로 빠짐
+            driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);  // 탐색시 object가 없으면 대기하는 시간.
         }
 
-        ListRefresh_dcMobile(0, "https://gall.dcinside.com/board/lists/?id=baseball_new10");
-        ListRefresh_dcMobile(1, "https://gall.dcinside.com/board/lists/?id=comic_new3");
-        ListRefresh_dcMobile(2, "https://gall.dcinside.com/board/lists?id=stream_new1");
-        //https://gall.dcinside.com/board/lists/?id=ib_new2
+        ListRefresh_dcMobile(0, "https://m.dcinside.com/board/baseball_new10");
+        ListRefresh_dcMobile(1, "https://m.dcinside.com/board/comic_new3");
+        ListRefresh_dcMobile(2, "https://m.dcinside.com/board/stream_new1");
+        //https://m.dcinside.com/board/ib_new2
     }
 
     public async Task ServerEnd()
@@ -149,9 +156,8 @@
             Console.WriteLine("[while " + pPageNumber + "] Start");
             try
             {
-                //driver.Navigate().Refresh();
                 driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
-            } catch { }
+            } catch {}
 
             IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.ClassName("gall-detail-lnktb"));
             VM.oContentList[pPageNumber].ClearDataset();
