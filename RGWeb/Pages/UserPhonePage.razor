@@ -10,11 +10,21 @@
 
 
 @code {
+    // 지원되는 갤러리 최대 수
     private int pageLength = 3;
-    private int selectPageLength = 1;
+    // 동시에 볼 수 있는 페이지 수
+    private int selectPageLength = 2;
+    // 현재 선택한 페이지 수들
     private List<int> selectPage = new List<int>()
     {
         0, 2
+    };
+    // 방문한 페이지
+    private List<Dictionary<int, bool>> visitedPage = new List<Dictionary<int, bool>>()
+    {
+        new Dictionary<int, bool>(),
+        new Dictionary<int, bool>(),
+        new Dictionary<int, bool>(),
     };
 
 
@@ -50,6 +60,7 @@
             {
                 await InvokeAsync(() =>
                 {
+                    CleanVisitedPage();
                     StateHasChanged();
                 });
             };
@@ -64,11 +75,12 @@
                 {
                     await InvokeAsync(() =>
                     {
+                        CleanVisitedPage();
                         StateHasChanged();
                     });
                 };
         }
-        
+
 
         await base.OnInitializedAsync();
     }
@@ -104,9 +116,23 @@
 
     string iframeUrl = "ContentBlankPage";
 
-    private void fnUrlClickEvent(string? pUrl)
+    private void fnUrlClickEvent(int pSelectPage, int pNumber)
     {
-        iframeUrl = pUrl;
+        if (!visitedPage[selectPage[pSelectPage]].ContainsKey(pNumber))
+            visitedPage[selectPage[pSelectPage]].Add(pNumber, true);
+    }
+
+    private void CleanVisitedPage()
+    {
+        if (VM.oContentList.Count > 0)
+            for (int i = 0; i < selectPageLength; i++)
+            {
+                int lowest = VM.oContentList[selectPage[i]].dataSet[VM.oContentList[selectPage[i]].dataSet.Count - 1].num;
+
+                foreach (KeyValuePair<int, bool> item in visitedPage[selectPage[i]])
+                    if (item.Key < lowest)
+                        visitedPage[selectPage[i]].Remove(item.Key);
+            }
     }
 }
 
@@ -135,7 +161,7 @@
                                     {
                                         foreach (Content item in VM.oContentList[selectPage[0]].dataSet)
                                         {
-                                            <RGWeb.Component.ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
                                         }
                                     }
                                 </div>
@@ -148,7 +174,7 @@
                                     {
                                         foreach (Content item in VM.oContentList[selectPage[1]].dataSet)
                                         {
-                                            <RGWeb.Component.ContentComponent pContent="@item" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1" pVisited="visitedPage[selectPage[1]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
                                         }
                                     }
                                 </div>
@@ -164,13 +190,13 @@
             <ContentTemplate>
                 <div class="row m-0">
                     <div class="col p-1">
-                        <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
+                        <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" InputAttributes="@(new Dictionary<string, object>() { { "inputmode", "none" } })">
                             <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
                             <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
                         </SfComboBox>
                     </div>
                     <div class="col p-1">
-                        <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
+                        <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" InputAttributes="@(new Dictionary<string, object>() { { "inputmode", "none" } })">
                             <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
                             <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
                         </SfComboBox>

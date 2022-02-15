@@ -7,7 +7,7 @@
             /// <summary>
             /// 게시글 번호
             /// </summary>
-            public string num { get; set; }
+            public int num { get; set; }
             /// <summary>
             /// 게시글 제목
             /// </summary>

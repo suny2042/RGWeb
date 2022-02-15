@@ -199,7 +199,7 @@
                 {
                     Content n = new Content()
                     {
-                        num = "0000", //y.FindElement(By.ClassName("gall_num")).Text, // 드드ㅐ
+                        num = UrlToNumber(lLeftLabel.GetAttribute("href")),
                         url = lLeftLabel.GetAttribute("href"),
                         title = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.ClassName("subjectin")).Text,
                         userName = lBottomLabel.ElementAt(0).Text,
@@ -283,7 +283,7 @@
                     IWebElement lTopLabel = y.FindElement(By.ClassName("gall_tit")).FindElement(By.TagName("a")); // gall_tit만 해야함. 마이크 아이콘이 있을 수 있음
                     Content n = new Content()
                     {
-                        num = y.FindElement(By.ClassName("gall_num")).Text,
+                        num = int.Parse(y.FindElement(By.ClassName("gall_num")).Text),
                         url = lTopLabel.GetAttribute("href"),
                         title = lTopLabel.Text,
                         userName = y.FindElement(By.ClassName("nickname")).GetAttribute("title"),
@@ -329,6 +329,14 @@
         , int.Parse(pStr.Substring(14, 2))
         , int.Parse(pStr.Substring(17, 2))
         );
+    }
+
+    public int UrlToNumber(string pUrl)
+    {
+        if (string.IsNullOrEmpty(pUrl))
+            return 0;
+        string[] temp = pUrl.Split('/');
+        return int.Parse(temp[temp.Length - 1]);
     }
 }
 
