@@ -48,6 +48,10 @@
             /// 게시글 작성일/시간
             /// </summary>
             public DateTime date { get; set; }
+            /// <summary>
+            /// 게스글 작성일/시간 (텍스트)
+            /// </summary>
+            public string contentDate { get; set; }
         }
     }
 }
