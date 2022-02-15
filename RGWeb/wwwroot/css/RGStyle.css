@@ -53,3 +53,28 @@
         border-color: #424348 !important;
     }
 }
+
+
+
+
+
+
+
+
+/* dc 아이콘 */
+.sp-lst-img{background-position:0 0!important}
+.sp-lst-txt{background-position:0 -19px!important}
+.sp-lst-play{background-position:0 -38px!important}
+.sp-lst-recoimg{background-position:0 -57px!important}
+.sp-lst-recotop{background-position:0 -76px!important}
+.sp-lst-recotxt{background-position:0 -95px!important}
+.sp-lst-recoplay{background-position: 0 -206px!important}
+.sp-lst-hit{background-position: 0 -223px!important} 
+.sp-lst-best{background-position: 0 -170px!important} 
+.best-on .sp-lst-best{background-position: 0 -187.5px;height: 17px;transform: translateY(-1px)} 
+.sp-penalty-alert{background-position:0 0;width:93px;height:82px}
+.sp-penalty-x{background-position:0 -84px;width:93px;height:93px}
+.sp-setting{position:relative;display:inline-block;width:20px;height:20px;font-size:0;line-height: 0;vertical-align:top}
+.sp-setting::after{content:"";display: inline-block;background-position:-157px -29px;width:20px;height:20px;
+position:absolute;transform: translate(-50%,-50%);left:50%;top:50%}
+.sp-ctmandu{width:32px;height:28px;background-position:-92px -101px;vertical-align:middle}
