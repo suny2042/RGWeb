@@ -23,6 +23,7 @@
 @code {
     protected List<FirefoxDriverService> driverService = new List<FirefoxDriverService>();
     protected FirefoxOptions options;
+    protected FirefoxProfile profile;
     protected List<FirefoxDriver> driver = new List<FirefoxDriver>();
     private int pageLength = 3;
     private bool serverOnoff = false;
@@ -96,9 +97,16 @@
         //driverService.HideCommandPromptWindow = true;
         //driverService.Port = 4444;
         options = new FirefoxOptions();
-        //options.AddArgument("-window-size=1920x1080");
-        options.AddArgument("-headless");
-        options.AddArgument("-disable-gpu");
+        //options.AddArgument("-headless");
+        //options.AddArgument("-disable-gpu");
+        //options.AddArgument("--disable-images");
+        //options.SetPreference("profile.default_content_setting_values.images", 2);
+        //options.AddArgument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
+        //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
+        //options.Profile = profile;
+        //options.Profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
+        //FirefoxProfile profile = new FirefoxProfile();
+        //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (Linux; Android 6.0; SAMSUNG SM-G930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/4.0 Chrome/44.0.2403.133 Mobile Safari/537.36");
 
         //Thread myThread = new Thread(ListRefresh); 
         //myThread.Start(); 
@@ -107,6 +115,7 @@
             driverService.Add(FirefoxDriverService.CreateDefaultService());
             driverService[i].Port = 44000 + i;
             driver.Add(new FirefoxDriver(driverService[i], options));
+            //driver[i].ExecuteScript("return navigator.userAgent;");
             driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1);
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0); // 탐색시 object가 없으면 대기하는 시간.
         }
@@ -133,7 +142,7 @@
     {
         Console.WriteLine("[ListRefresh " + pPageNumber + "] Start : " + pPageUrl);
 
-        while(true)
+        while(serverOnoff)
         {
             Console.WriteLine("[while " + pPageNumber + "] Start");
             try
