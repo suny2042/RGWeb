@@ -22,7 +22,7 @@
 
 @code {
     protected List<ChromeDriverService> driverService = new List<ChromeDriverService>();
-    
+
     protected ChromeOptions options;
     protected List<ChromeDriver> driver = new List<ChromeDriver>();
     private int pageLength = 3;
@@ -150,6 +150,10 @@
                 //driver.Navigate().Refresh();
                 driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
             } catch { }
+
+            Console.WriteLine("[while " + pPageNumber + "] End");
+            await Task.Delay(100);
+            continue;
 
             IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.CssSelector("tr[class='ub-content us-post']"));
             VM.oContentList[pPageNumber].ClearDataset();
