@@ -188,6 +188,13 @@
                         commentCount = lCommentCount,
                     };
 
+                    // 공지는 리스트에 추가 x
+                    if (n.contentIconUrl == "icon_img icon_notice")
+                    {
+                        findCount--; // 공지 수 만큼 다른 게시글로 추가
+                        continue;
+                    }
+
                     VM.oContentList[pPageNumber].InsertRow(n);
                 } catch
                 {
