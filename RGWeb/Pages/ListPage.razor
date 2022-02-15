@@ -211,8 +211,7 @@
                     continue;
                 }
             }
-            if (pPageNumber == 0)
-                VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
+            VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
 
             Console.WriteLine("[while " + pPageNumber + "] End");
             await Task.Delay(100);
