@@ -120,9 +120,9 @@
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0); // 탐색시 object가 없으면 대기하는 시간.
         }
 
-        ListRefresh(0, "https://gall.dcinside.com/board/lists/?id=baseball_new10");
-        ListRefresh(1, "https://gall.dcinside.com/board/lists/?id=comic_new3");
-        ListRefresh(2, "https://gall.dcinside.com/board/lists?id=stream_new1");
+        ListRefresh_dcMobile(0, "https://gall.dcinside.com/board/lists/?id=baseball_new10");
+        ListRefresh_dcMobile(1, "https://gall.dcinside.com/board/lists/?id=comic_new3");
+        ListRefresh_dcMobile(2, "https://gall.dcinside.com/board/lists?id=stream_new1");
         //https://gall.dcinside.com/board/lists/?id=ib_new2
     }
 
@@ -136,6 +136,93 @@
             }
 
         Console.WriteLine("Server Dispose");
+    }
+
+    private async Task ListRefresh_dcMobile(int pPageNumber, string pPageUrl)
+    {
+        Console.WriteLine("[ListRefresh_dcMobile " + pPageNumber + "] Start : " + pPageUrl);
+
+        while(serverOnoff)
+        {
+            Console.WriteLine("[while " + pPageNumber + "] Start");
+            try
+            {
+                //driver.Navigate().Refresh();
+                driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
+            } catch { }
+
+            IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.ClassName("gall-detail-lnktb"));
+            VM.oContentList[pPageNumber].ClearDataset();
+
+            int findCount = 0;
+            foreach(IWebElement y in x)
+            {
+                findCount++;
+                if (findCount >= 20)
+                    break;
+
+                IWebElement lLeftLabel = null;
+                IReadOnlyCollection<IWebElement> lBottomLabel = null;
+                try
+                {
+                    lLeftLabel = y.FindElement(By.ClassName("lt"));
+                    lBottomLabel = lLeftLabel.FindElement(By.ClassName("ginfo")).FindElements(By.TagName("li"));
+                } catch {}
+
+                string lUserIconUrl = "";
+                try
+                {
+                    lUserIconUrl = lBottomLabel.ElementAt(0).FindElement(By.TagName("span")).GetAttribute("class");
+                } catch {}
+
+                string lUserIp = "";
+                //try
+                //{
+                //    lUserIp = y.FindElement(By.CssSelector("span[class='ip']")).Text;
+                //} catch {}
+
+                string lCommentCount = "";
+                try
+                {
+                    lCommentCount = y.FindElement(By.ClassName("rt")).FindElement(By.ClassName("ct")).Text;
+                } catch {}
+
+                try
+                {
+                    Content n = new Content()
+                    {
+                        num = "0000", //y.FindElement(By.ClassName("gall_num")).Text, // 드드ㅐ
+                        url = lLeftLabel.GetAttribute("href"),
+                        title = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.ClassName("subjectin")).Text,
+                        userName = lBottomLabel.ElementAt(0).Text,
+                        viewCount = lBottomLabel.ElementAt(2).Text.Remove(0, 3),
+                        goodCount = lBottomLabel.ElementAt(3).Text.Remove(0, 3),
+                        date = StrToDate(lBottomLabel.ElementAt(1).Text), //StrToDate(y.FindElement(By.ClassName("gall_date")).GetAttribute("title")),
+                        userIconUrl = lUserIconUrl,
+                        userIp = lUserIp,
+                        contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
+                        commentCount = lCommentCount,
+                    };
+
+                    // 공지는 리스트에 추가 x
+                    if (n.contentIconUrl == "icon_img icon_notice")
+                    {
+                        findCount--; // 공지 수 만큼 다른 게시글로 추가
+                        continue;
+                    }
+
+                    VM.oContentList[pPageNumber].InsertRow(n);
+                } catch
+                {
+                    Console.WriteLine("[while " + pPageNumber + "] new Content Fail");
+                    continue;
+                }
+            }
+            VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
+
+            Console.WriteLine("[while " + pPageNumber + "] End");
+            await Task.Delay(100);
+        }
     }
 
     private async Task ListRefresh(int pPageNumber, string pPageUrl)
