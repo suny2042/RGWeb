@@ -127,6 +127,8 @@
         if (VM.oContentList.Count > 0)
             for (int i = 0; i < pageLength; i++)
             {
+                if (VM.oContentList[i].dataSet.Count <= 0) continue;
+
                 int lowest = VM.oContentList[i].dataSet[VM.oContentList[i].dataSet.Count - 1].num;
 
                 foreach (KeyValuePair<int, bool> item in visitedPage[i])
