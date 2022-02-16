@@ -13,7 +13,6 @@
 
 //};
 
-// 2022.01.19 윤기선 유저가 클라이언트 브라우저의 창을 조절할 경우 시스템(App.razor)에 알려줌
 window.JS_addEventListener_resize = (dotNetHelper) => {
     window.addEventListener('resize', function () {
         let lClientBrowserWidth = window.innerWidth;
@@ -22,11 +21,6 @@ window.JS_addEventListener_resize = (dotNetHelper) => {
         dotNetHelper.invokeMethodAsync('ClientBrowserResized', lClientBrowserWidth, lClientBrowserHeight);
     });
 };
-
-
-
-
-
 
 
 //test
@@ -232,6 +226,10 @@ window.JS_Collapse = (pButtonID, pElementID) => {
 
 window.JS_goToIframe = (pUrl, pTitleId) => {
     $('#userIframe').attr('src', pUrl);
-    $('#' + pTitleId).attr('class', 'ListContentvisitedTitle');
+    $('#' + pTitleId).attr('class', 'ListContentvisitedTitleTemp');
+}
+
+window.JS_ListContentvisitedTitleTemp = () => {
+    $('.ListContentvisitedTitleTemp').removeClass('ListContentvisitedTitleTemp');
 }
 

@@ -62,6 +62,7 @@
                 {
                     CleanVisitedPage();
                     StateHasChanged();
+                    JS.InvokeVoidAsync("JS_ListContentvisitedTitleTemp"); // 클라에서 선택했던 타이틀 임시 css 제거
                 });
             };
     }
@@ -77,6 +78,7 @@
                     {
                         CleanVisitedPage();
                         StateHasChanged();
+                        JS.InvokeVoidAsync("JS_ListContentvisitedTitleTemp"); // 클라에서 선택했던 타이틀 임시 css 제거
                     });
                 };
         }

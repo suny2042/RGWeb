@@ -20,6 +20,10 @@
 .ListContentvisitedTitle {
     color: mediumpurple;
 }
+/* 클라이언트에서 직접 클릭한 게시물 임시 색상변경 */
+.ListContentvisitedTitleTemp {
+    color: mediumpurple;
+}
 
 /* 다크 모드에 적용할 스타일 정의 */
 @media (prefers-color-scheme: dark) {
@@ -41,7 +45,12 @@
     .ListContentvisitedTitle {
         color: rebeccapurple;
     }
+    /* 클라이언트에서 직접 클릭한 게시물 임시 색상변경 */
+    .ListContentvisitedTitleTemp {
+        color: rebeccapurple;
+    }
 
+    /* 테두리 색 */
     .RGBorderColor {
         border-color: #424348 !important;
     }
