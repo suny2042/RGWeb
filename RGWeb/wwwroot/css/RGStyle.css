@@ -16,6 +16,7 @@
     color: #0080FF;
 }
 
+/* 클릭했던 게시물 타이틀 색상변경 */
 .ListContentvisitedTitle {
     color: mediumpurple;
 }
@@ -36,6 +37,7 @@
         color: #999;
     }
 
+    /* 클릭했던 게시물 타이틀 색상변경 */
     .ListContentvisitedTitle {
         color: rebeccapurple;
     }
