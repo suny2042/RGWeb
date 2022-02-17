@@ -63,12 +63,13 @@
                     CleanVisitedPage();
                     StateHasChanged();
                     JS.InvokeVoidAsync("JS_ListContentvisitedTitleTemp"); // 클라에서 선택했던 타이틀 임시 css 제거
-                });
+            });
             };
     }
 
     protected override async Task OnInitializedAsync()
     {
+        ServerInfo.UserConnectCount++;
         if (VM.oContentList.Count > 0)
         {
             for (int i = 0; i < selectPageLength; i++)
@@ -98,6 +99,7 @@
     // 메모리 누수 방지
     public void Dispose()
     {
+        ServerInfo.UserConnectCount--;
         if (VM.oContentList.Count > 0)
             for (int i = 0; i < selectPageLength; i++)
                 VM.oContentList[selectPage[i]].PropertyChanged -= OnPropertyChangedHandler;
@@ -127,15 +129,15 @@
     private void CleanVisitedPage()
     {
         if (VM.oContentList.Count > 0)
-            for (int i = 0; i < selectPageLength; i++)
+            for (int i = 0; i < pageLength; i++)
             {
                 if (VM.oContentList[i].dataSet.Count <= 0) continue;
 
-                int lowest = VM.oContentList[selectPage[i]].dataSet[VM.oContentList[selectPage[i]].dataSet.Count - 1].num;
+                int lowest = VM.oContentList[i].dataSet[VM.oContentList[i].dataSet.Count - 1].num;
 
-                foreach (KeyValuePair<int, bool> item in visitedPage[selectPage[i]])
+                foreach (KeyValuePair<int, bool> item in visitedPage[i])
                     if (item.Key < lowest)
-                        visitedPage[selectPage[i]].Remove(item.Key);
+                        visitedPage[i].Remove(item.Key);
             }
     }
 }

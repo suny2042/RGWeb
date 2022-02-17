@@ -69,6 +69,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        ServerInfo.UserConnectCount++;
         if (VM.oContentList.Count > 0)
         {
             for (int i = 0; i < selectPageLength; i++)
@@ -98,6 +99,7 @@
     // 메모리 누수 방지
     public void Dispose()
     {
+        ServerInfo.UserConnectCount--;
         if (VM.oContentList.Count > 0)
             for (int i = 0; i < selectPageLength; i++)
                 VM.oContentList[selectPage[i]].PropertyChanged -= OnPropertyChangedHandler;
@@ -141,7 +143,7 @@
 }
 
 
-<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor">
+<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded">
     <SplitterPanes>
 
         <SplitterPane Size="250px" Collapsible="true" CssClass="p-0">
@@ -204,9 +206,9 @@
             </ContentTemplate>
         </SplitterPane>
 
-        <SplitterPane CssClass="p-1">
+        <SplitterPane>
             <ContentTemplate>
-                <div class="d-flex rounded w-100 h-100">
+                <div class="d-flex rounded border RGBorderColor w-100 h-100">
                     <iframe id="userIframe" class="w-100 h-100"></iframe>
                 </div>
             </ContentTemplate>
