@@ -11,6 +11,7 @@
 
 @using OpenQA.Selenium;
 @using OpenQA.Selenium.Chrome;
+@using System.Diagnostics;
 
 <h3>Server</h3>
 
@@ -22,9 +23,15 @@
 
 @code {
     protected List<ChromeDriverService> driverService = new List<ChromeDriverService>();
-
     protected ChromeOptions options;
     protected List<ChromeDriver> driver = new List<ChromeDriver>();
+    protected List<bool> driverLock = new List<bool>()
+    {
+        false,
+        false,
+        false,
+        false,
+    };
     private int pageLength = 3;
     private bool serverOnoff = false;
     SfSwitch<bool> serverSwitch;
@@ -129,10 +136,40 @@
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);  // 탐색시 object가 없으면 대기하는 시간.
         }
 
-        ListRefresh_dcMobile(0, "https://m.dcinside.com/board/baseball_new10");
-        ListRefresh_dcMobile(1, "https://m.dcinside.com/board/comic_new3");
-        ListRefresh_dcMobile(2, "https://m.dcinside.com/board/stream_new1");
-        //https://m.dcinside.com/board/ib_new2
+        Console.WriteLine("[ListRefresh_dcMobile] Start");
+        // 인방갤 https://m.dcinside.com/board/ib_new2
+
+        Stopwatch stopwatch = new Stopwatch();
+
+        while(serverOnoff)
+        {
+            stopwatch.Start();
+
+            var tk00 = ListRefresh_dcMobile(0, "https://m.dcinside.com/board/baseball_new10");
+            var tk01 = ListRefresh_dcMobile(1, "https://m.dcinside.com/board/comic_new3");
+            var tk02 = ListRefresh_dcMobile(2, "https://m.dcinside.com/board/stream_new1");
+
+            var allTasks = new List<Task>
+            {
+                tk00, tk01, tk02
+            };
+
+            while (allTasks.Any())
+            {
+                Task finished = await Task.WhenAny(allTasks);
+
+                if (finished == tk00) { allTasks.Remove(tk00); }
+                else if (finished == tk01) { allTasks.Remove(tk01); }
+                else if (finished == tk02) { allTasks.Remove(tk02); }
+                else { allTasks.Remove(finished); }
+            }
+            await Task.Delay(10);
+
+            stopwatch.Stop();
+            Console.WriteLine("시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
+            stopwatch.Reset();
+        }
+
     }
 
     public async Task ServerEnd()
@@ -149,87 +186,155 @@
 
     private async Task ListRefresh_dcMobile(int pPageNumber, string pPageUrl)
     {
-        Console.WriteLine("[ListRefresh_dcMobile " + pPageNumber + "] Start : " + pPageUrl);
+        if (driverLock[pPageNumber]) return;
+        else driverLock[pPageNumber] = true;
 
-        while(serverOnoff)
+        Console.WriteLine("[while " + pPageNumber + "] Start");
+        try
         {
-            Console.WriteLine("[while " + pPageNumber + "] Start");
-            try
-            {
-                driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
-            } catch {}
+            driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
+        } catch {}
+        await Task.Delay(1);
 
-            IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.ClassName("gall-detail-lnktb"));
-            VM.oContentList[pPageNumber].ClearDataset();
+        Console.WriteLine("[while " + pPageNumber + "] Url");
 
-            int findCount = 0;
-            foreach(IWebElement y in x)
-            {
-                findCount++;
-                if (findCount >= 20)
-                    break;
+        IReadOnlyCollection<IWebElement> webElements = driver[pPageNumber].FindElements(By.ClassName("gall-detail-lnktb"));
+        VM.oContentList[pPageNumber].ClearDataset();
 
-                IWebElement lLeftLabel = null;
-                IReadOnlyCollection<IWebElement> lBottomLabel = null;
-                try
+        Console.WriteLine("[while " + pPageNumber + "] Find");
+
+        var tk00 = ListRefresh_dcMobile_Find(pPageNumber, 0 , webElements);
+        var tk01 = ListRefresh_dcMobile_Find(pPageNumber, 1 , webElements);
+        var tk02 = ListRefresh_dcMobile_Find(pPageNumber, 2 , webElements);
+        var tk03 = ListRefresh_dcMobile_Find(pPageNumber, 3 , webElements);
+        var tk04 = ListRefresh_dcMobile_Find(pPageNumber, 4 , webElements);
+        var tk05 = ListRefresh_dcMobile_Find(pPageNumber, 5 , webElements);
+        var tk06 = ListRefresh_dcMobile_Find(pPageNumber, 6 , webElements);
+        var tk07 = ListRefresh_dcMobile_Find(pPageNumber, 7 , webElements);
+        var tk08 = ListRefresh_dcMobile_Find(pPageNumber, 8 , webElements);
+        var tk09 = ListRefresh_dcMobile_Find(pPageNumber, 9 , webElements);
+        var tk10 = ListRefresh_dcMobile_Find(pPageNumber, 10, webElements);
+        var tk11 = ListRefresh_dcMobile_Find(pPageNumber, 11, webElements);
+        var tk12 = ListRefresh_dcMobile_Find(pPageNumber, 12, webElements);
+        var tk13 = ListRefresh_dcMobile_Find(pPageNumber, 13, webElements);
+        var tk14 = ListRefresh_dcMobile_Find(pPageNumber, 14, webElements);
+        var tk15 = ListRefresh_dcMobile_Find(pPageNumber, 15, webElements);
+        var tk16 = ListRefresh_dcMobile_Find(pPageNumber, 16, webElements);
+        var tk17 = ListRefresh_dcMobile_Find(pPageNumber, 17, webElements);
+        var tk18 = ListRefresh_dcMobile_Find(pPageNumber, 18, webElements);
+        var tk19 = ListRefresh_dcMobile_Find(pPageNumber, 19, webElements);
+
+        var allTasks = new List<Task>
+        {
+            tk00,
+            tk01,
+            tk02,
+            tk03,
+            tk04,
+            tk05,
+            tk06,
+            tk07,
+            tk08,
+            tk09,
+            tk10,
+            tk11,
+            tk12,
+            tk13,
+            tk14,
+            tk15,
+            tk16,
+            tk17,
+            tk18,
+            tk19,
+        };
+
+        while (allTasks.Any())
+        {
+            Task finished = await Task.WhenAny(allTasks);
+
+            if (finished == tk00) { allTasks.Remove(tk00); }
+            else if (finished == tk01) { Console.WriteLine("" + 1);  allTasks.Remove(tk01); }
+            else if (finished == tk02) { Console.WriteLine("" + 2);  allTasks.Remove(tk02); }
+            else if (finished == tk03) { Console.WriteLine("" + 3);  allTasks.Remove(tk03); }
+            else if (finished == tk04) { Console.WriteLine("" + 4);  allTasks.Remove(tk04); }
+            else if (finished == tk05) { Console.WriteLine("" + 5);  allTasks.Remove(tk05); }
+            else if (finished == tk06) { Console.WriteLine("" + 6);  allTasks.Remove(tk06); }
+            else if (finished == tk07) { Console.WriteLine("" + 7);  allTasks.Remove(tk07); }
+            else if (finished == tk08) { Console.WriteLine("" + 8);  allTasks.Remove(tk08); }
+            else if (finished == tk09) { Console.WriteLine("" + 9);  allTasks.Remove(tk09); }
+            else if (finished == tk10) { Console.WriteLine("" + 10); allTasks.Remove(tk10); }
+            else if (finished == tk11) { Console.WriteLine("" + 11); allTasks.Remove(tk11); }
+            else if (finished == tk12) { Console.WriteLine("" + 12); allTasks.Remove(tk12); }
+            else if (finished == tk13) { Console.WriteLine("" + 13); allTasks.Remove(tk13); }
+            else if (finished == tk14) { Console.WriteLine("" + 14); allTasks.Remove(tk14); }
+            else if (finished == tk15) { Console.WriteLine("" + 15); allTasks.Remove(tk15); }
+            else if (finished == tk16) { Console.WriteLine("" + 16); allTasks.Remove(tk16); }
+            else if (finished == tk17) { Console.WriteLine("" + 17); allTasks.Remove(tk17); }
+            else if (finished == tk18) { Console.WriteLine("" + 18); allTasks.Remove(tk18); }
+            else if (finished == tk19) { Console.WriteLine("" + 19); allTasks.Remove(tk19); }
+            else { Console.WriteLine("any end"); allTasks.Remove(finished); }
+        }
+
+        VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
+
+        Console.WriteLine("[while " + pPageNumber + "] End");
+        //await Task.Delay(100);
+
+        driverLock[pPageNumber] = false;
+    }
+
+    private async Task ListRefresh_dcMobile_Find(int pPageNumber, int pElementIndex, IReadOnlyCollection<IWebElement> pWebElement)
+    {
+        IWebElement lLeftLabel = null;
+        IReadOnlyCollection<IWebElement> lBottomLabel = null;
+        lLeftLabel = pWebElement.ElementAt(pElementIndex).FindElement(By.ClassName("lt"));
+        lBottomLabel = lLeftLabel.FindElement(By.ClassName("ginfo")).FindElements(By.TagName("li"));
+
+        string lUserIconUrl = "";
+        try
+        {
+            lUserIconUrl = lBottomLabel.ElementAt(0).FindElement(By.TagName("span")).GetAttribute("class");
+        }
+        catch { }
+
+        string lUserIp = "";
+
+        string lCommentCount = "";
+        try
+        {
+            lCommentCount = pWebElement.ElementAt(pElementIndex).FindElement(By.ClassName("rt")).FindElement(By.ClassName("ct")).Text;
+        }
+        catch { }
+
+        try
+        {
+            Content n = new Content()
                 {
-                    lLeftLabel = y.FindElement(By.ClassName("lt"));
-                    lBottomLabel = lLeftLabel.FindElement(By.ClassName("ginfo")).FindElements(By.TagName("li"));
-                } catch {}
+                    num = UrlToNumber(lLeftLabel.GetAttribute("href")),
+                    url = lLeftLabel.GetAttribute("href"),
+                    title = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.ClassName("subjectin")).Text,
+                    userName = lBottomLabel.ElementAt(0).Text,
+                    viewCount = lBottomLabel.ElementAt(2).Text.Remove(0, 3),
+                    goodCount = lBottomLabel.ElementAt(3).Text.Remove(0, 3),
+                    contentDate = lBottomLabel.ElementAt(1).Text,
+                    userIconUrl = lUserIconUrl,
+                    userIp = lUserIp,
+                    contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
+                    commentCount = lCommentCount,
+                };
 
-                string lUserIconUrl = "";
-                try
-                {
-                    lUserIconUrl = lBottomLabel.ElementAt(0).FindElement(By.TagName("span")).GetAttribute("class");
-                } catch {}
+            // 공지는 리스트에 추가 x
+            //if (n.contentIconUrl == "icon_img icon_notice")
+            //{
+            //    continue;
+            //}
 
-                string lUserIp = "";
-                //try
-                //{
-                //    lUserIp = y.FindElement(By.CssSelector("span[class='ip']")).Text;
-                //} catch {}
-
-                string lCommentCount = "";
-                try
-                {
-                    lCommentCount = y.FindElement(By.ClassName("rt")).FindElement(By.ClassName("ct")).Text;
-                } catch {}
-
-                try
-                {
-                    Content n = new Content()
-                    {
-                        num = UrlToNumber(lLeftLabel.GetAttribute("href")),
-                        url = lLeftLabel.GetAttribute("href"),
-                        title = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.ClassName("subjectin")).Text,
-                        userName = lBottomLabel.ElementAt(0).Text,
-                        viewCount = lBottomLabel.ElementAt(2).Text.Remove(0, 3),
-                        goodCount = lBottomLabel.ElementAt(3).Text.Remove(0, 3),
-                        contentDate = lBottomLabel.ElementAt(1).Text, //StrToDate(y.FindElement(By.ClassName("gall_date")).GetAttribute("title")),
-                        userIconUrl = lUserIconUrl,
-                        userIp = lUserIp,
-                        contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
-                        commentCount = lCommentCount,
-                    };
-
-                    // 공지는 리스트에 추가 x
-                    if (n.contentIconUrl == "icon_img icon_notice")
-                    {
-                        findCount--; // 공지 수 만큼 다른 게시글로 추가
-                        continue;
-                    }
-
-                    VM.oContentList[pPageNumber].InsertRow(n);
-                } catch
-                {
-                    Console.WriteLine("[while " + pPageNumber + "] new Content Fail");
-                    continue;
-                }
-            }
-            VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
-
-            Console.WriteLine("[while " + pPageNumber + "] End");
-            await Task.Delay(100);
+            VM.oContentList[pPageNumber].InsertRow(n);
+        }
+        catch
+        {
+            Console.WriteLine("[while " + pPageNumber + "] new Content Fail");
+            return;
         }
     }
 
