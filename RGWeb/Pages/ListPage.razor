@@ -254,7 +254,8 @@
         //foreach (Thread t in thread)
         //        t.Join();
 
-        VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
+        if (pPageNumber == 0)
+            VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
 
         Console.WriteLine("[while " + pPageNumber + "] End");
     }
