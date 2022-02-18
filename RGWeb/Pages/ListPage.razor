@@ -189,6 +189,7 @@
             thread[2].Start();
             foreach (Thread t in thread)
                 t.Join();
+            VM.oContentList[0].OnPropertyChanged("All");
 
             stopwatch.Stop();
             Console.WriteLine("시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
@@ -253,9 +254,7 @@
         //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 19, webElements))); thread[19].IsBackground = true; thread[19].Start();
         //foreach (Thread t in thread)
         //        t.Join();
-
-        if (pPageNumber == 0)
-            VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
+        //VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
 
         Console.WriteLine("[while " + pPageNumber + "] End");
     }
