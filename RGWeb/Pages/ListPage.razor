@@ -362,8 +362,16 @@
     {
         IWebElement lLeftLabel = null;
         IReadOnlyCollection<IWebElement> lBottomLabel = null;
-        lLeftLabel = pWebElement.ElementAt(pElementIndex).FindElement(By.ClassName("lt"));
-        lBottomLabel = lLeftLabel.FindElement(By.ClassName("ginfo")).FindElements(By.TagName("li"));
+        try
+        {
+            lLeftLabel = pWebElement.ElementAt(pElementIndex).FindElement(By.ClassName("lt"));
+            lBottomLabel = lLeftLabel.FindElement(By.ClassName("ginfo")).FindElements(By.TagName("li"));
+        }
+        catch
+        { 
+            Console.WriteLine("[while " + pPageNumber + "] WebElement Fail");
+            return;
+        } // 여기부터 에러면 그냥 리턴
 
         string lUserIconUrl = "";
         try
@@ -397,12 +405,6 @@
                     contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
                     commentCount = lCommentCount,
                 };
-
-            // 공지는 리스트에 추가 x
-            //if (n.contentIconUrl == "icon_img icon_notice")
-            //{
-            //    continue;
-            //}
 
             VM.oContentList[pPageNumber].InsertRow(n);
         }
