@@ -25,9 +25,9 @@
         }
         public static List<PageType> PageTypeList = new List<PageType>
         {
-            new PageType() { Value = 0, SiteType = 1, RefreshLevel = 3, Text = "국내야구", Url="https://m.dcinside.com/board/baseball_new10" },
-            new PageType() { Value = 1, SiteType = 1, RefreshLevel = 3, Text = "만화", Url="https://m.dcinside.com/board/comic_new3" },
-            new PageType() { Value = 2, SiteType = 1, RefreshLevel = 3, Text = "스트리머", Url="https://m.dcinside.com/board/stream_new1" },
+            new PageType() { Value = 0, SiteType = 1, RefreshLevel = 0, Text = "국내야구", Url="https://m.dcinside.com/board/baseball_new10" },
+            new PageType() { Value = 1, SiteType = 1, RefreshLevel = 0, Text = "만화", Url="https://m.dcinside.com/board/comic_new3" },
+            new PageType() { Value = 2, SiteType = 1, RefreshLevel = 0, Text = "스트리머", Url="https://m.dcinside.com/board/stream_new1" },
         };
     }
 }
