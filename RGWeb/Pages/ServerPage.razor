@@ -1,4 +1,4 @@
-﻿@page "/adm/ListPage"
+﻿@page "/adm/ServerPage"
 @*〈공통〉*@
 @implements IDisposable
 @inject IJSRuntime JS               // 자바스크립트 관련
@@ -8,14 +8,15 @@
 @inject RGWeb.ViewModels.IContentViewModel VM
 @using static RGWeb.Models.ContentModel
 @using RGWeb.ViewModels
+@using static RGWeb.Shared.ServerInfo
 
 @using OpenQA.Selenium;
 @using OpenQA.Selenium.Chrome;
 @using System.Diagnostics;
 
-<h3>Server</h3>
+<h3 class="RGTextColor">Server</h3>
 
-<div class="d-flex align-items-center">
+<div class="d-flex align-items-center RGTextColor">
     Server Start&nbsp;<SfSwitch @ref="serverSwitch" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>
 </div>
     
@@ -25,26 +26,12 @@
     protected List<ChromeDriverService> driverService = new List<ChromeDriverService>();
     protected ChromeOptions options;
     protected List<ChromeDriver> driver = new List<ChromeDriver>();
-    protected List<bool> driverLock = new List<bool>()
-    {
-        false,
-        false,
-        false,
-        false,
-    };
-    protected List<string> siteUrl = new List<string>()
-    {
-        "https://m.dcinside.com/board/baseball_new10",
-        "https://m.dcinside.com/board/comic_new3",
-        "https://m.dcinside.com/board/stream_new1",
-    };
-    private int pageLength = 3;
     private bool serverOnoff = false;
     SfSwitch<bool> serverSwitch;
 
     protected override async Task OnInitializedAsync()
     {
-        for (int i = 0; i < pageLength; i++)
+        for (int i = 0; i < PageTypeList.Count; i++)
             VM.oContentList.Add(new ModelDataSet<Content>());
 
         for (int i = 0; i < VM.oContentList.Count; i++)
@@ -102,13 +89,13 @@
     // 페이지의 시작
     public async Task ServerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
     {
-        for (int i = 0; i < pageLength; i++)
+        for (int i = 0; i < PageTypeList.Count; i++)
             if (driver is not null && driver.Count > 0 && driver[i] is not null)
                 driver[i].Quit();
+        driverService.Clear();
+        driver.Clear();
 
         // System.IO.Directory.GetCurrentDirectory() + @"\bin\Debug\net6.0\"
-        //driverService.HideCommandPromptWindow = true;
-        //driverService.Port = 4444;
         options = new ChromeOptions();
         options.AddArgument("-headless");
         options.AddArgument("-disable-gpu");
@@ -116,33 +103,22 @@
         //options.SetPreference("profile.default_content_setting_values.images", 2);
         options.AddArgument("--log-level=3");
         options.AddArgument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
-        //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
-        //options.Profile = profile;
-        //options.Profile.SetPreference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
-        //ChromeProfile profile = new ChromeProfile();
-        //profile.SetPreference("general.useragent.override", "Mozilla/5.0 (Linux; Android 6.0; SAMSUNG SM-G930F Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/4.0 Chrome/44.0.2403.133 Mobile Safari/537.36");
-
         // 성능개선대책
         //options.AddArguments("enable-automation");
         //options.AddArguments("--no-sandbox");
         //options.AddArguments("--disable-extensions");
         //options.AddArguments("--dns-prefetch-disable");
 
-
-        //Thread myThread = new Thread(ListRefresh); 
-        //myThread.Start(); 
-        for (int i = 0; i < pageLength; i++)
+        for (int i = 0; i < PageTypeList.Count; i++)
         {
             driverService.Add(ChromeDriverService.CreateDefaultService());
             driverService[i].Port = 44000 + i;
-            //driverService[i].SuppressInitialDiagnosticInformation = true;
             driver.Add(new ChromeDriver(driverService[i], options));
-            //driver[i].ExecuteScript("return navigator.userAgent;");
             driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromMilliseconds(3000);   // 페이지 접속시 지정한 시간 이후까지 로드가 안되면 에러로 빠짐
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);  // 탐색시 object가 없으면 대기하는 시간.
         }
 
-        Console.WriteLine("[ListRefresh_dcMobile] Start");
+        Console.WriteLine("[ListRefresh] Start");
         // 인방갤 https://m.dcinside.com/board/ib_new2
 
         Stopwatch stopwatch = new Stopwatch();
@@ -150,41 +126,23 @@
 
         while(serverOnoff)
         {
+            stopwatch.Reset();
             stopwatch.Start();
-
-            //var tk00 = ListRefresh_dcMobile(0, "https://m.dcinside.com/board/baseball_new10");
-            //var tk01 = ListRefresh_dcMobile(1, "https://m.dcinside.com/board/comic_new3");
-            //var tk02 = ListRefresh_dcMobile(2, "https://m.dcinside.com/board/stream_new1");
-
-            //var allTasks = new List<Task>
-            //{
-            //    tk00, tk01, tk02
-            //};
-
-            //while (allTasks.Any())
-            //{
-            //    Task finished = await Task.WhenAny(allTasks);
-
-            //    if (finished == tk00) { allTasks.Remove(tk00); }
-            //    else if (finished == tk01) { allTasks.Remove(tk01); }
-            //    else if (finished == tk02) { allTasks.Remove(tk02); }
-            //    else { allTasks.Remove(finished); }
-            //}
-            //await Task.Delay(10);
             thread.Clear();
-            //for (int i = 0; i < pageLength; i++)
+
+            //for (int i = 0; i < PageTypeList.Count; i++)  // i 값 순서가 불안정함
             //{
             //    thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(i, siteUrl[i])));
             //    thread[i].IsBackground = true; // 메인 쓰레드 종료시 강제종료
             //    thread[i].Start();
             //}
-            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(0, siteUrl[0])));
+            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(0, PageTypeList[0].Url)));
             thread[0].IsBackground = true; // 메인 쓰레드 종료시 강제종료
             thread[0].Start();
-            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(1, siteUrl[1])));
+            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(1, PageTypeList[1].Url)));
             thread[1].IsBackground = true; // 메인 쓰레드 종료시 강제종료
             thread[1].Start();
-            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(2, siteUrl[2])));
+            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(2, PageTypeList[2].Url)));
             thread[2].IsBackground = true; // 메인 쓰레드 종료시 강제종료
             thread[2].Start();
             foreach (Thread t in thread)
@@ -193,7 +151,6 @@
 
             stopwatch.Stop();
             Console.WriteLine("시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
-            stopwatch.Reset();
             await Task.Delay(10);
         }
 
@@ -201,161 +158,33 @@
 
     public async Task ServerEnd()
     {
-        for (int i = 0; i < pageLength; i++)
+        for (int i = 0; i < PageTypeList.Count; i++)
             if (driver is not null && driver.Count > 0 && driver[i] is not null)
             {
                 driver[i].Quit();
                 driverService[i].Dispose();
             }
 
-        Console.WriteLine("Server Dispose");
+        Console.WriteLine("Driver Dispose");
     }
 
     private void ListRefresh_dcMobile_Thread(int pPageNumber, string pPageUrl)
     {
-        //ListRefresh_dcMobile(pPageNumber, pPageUrl);
-
-        Console.WriteLine("[while " + pPageNumber + "] Start");
+        //Console.WriteLine("[while " + pPageNumber + "] Start");
         try
         {
             driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
         } catch {}
 
-        Console.WriteLine("[while " + pPageNumber + "] Url");
+        //Console.WriteLine("[while " + pPageNumber + "] Url");
 
         IReadOnlyCollection<IWebElement> webElements = driver[pPageNumber].FindElements(By.ClassName("gall-detail-lnktb"));
         VM.oContentList[pPageNumber].ClearDataset();
 
-        Console.WriteLine("[while " + pPageNumber + "] Find");
+        //Console.WriteLine("[while " + pPageNumber + "] Find");
 
         for (int i = 0; i < 20; i++)
             ListRefresh_dcMobile_Find(pPageNumber, i , webElements);
-
-        //List<Thread> thread = new List<Thread>();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  0, webElements))); thread[ 0].IsBackground = true; thread[ 0].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  1, webElements))); thread[ 1].IsBackground = true; thread[ 1].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  2, webElements))); thread[ 2].IsBackground = true; thread[ 2].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  3, webElements))); thread[ 3].IsBackground = true; thread[ 3].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  4, webElements))); thread[ 4].IsBackground = true; thread[ 4].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  5, webElements))); thread[ 5].IsBackground = true; thread[ 5].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  6, webElements))); thread[ 6].IsBackground = true; thread[ 6].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  7, webElements))); thread[ 7].IsBackground = true; thread[ 7].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  8, webElements))); thread[ 8].IsBackground = true; thread[ 8].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber,  9, webElements))); thread[ 9].IsBackground = true; thread[ 9].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 10, webElements))); thread[10].IsBackground = true; thread[10].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 11, webElements))); thread[11].IsBackground = true; thread[11].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 12, webElements))); thread[12].IsBackground = true; thread[12].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 13, webElements))); thread[13].IsBackground = true; thread[13].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 14, webElements))); thread[14].IsBackground = true; thread[14].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 15, webElements))); thread[15].IsBackground = true; thread[15].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 16, webElements))); thread[16].IsBackground = true; thread[16].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 17, webElements))); thread[17].IsBackground = true; thread[17].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 18, webElements))); thread[18].IsBackground = true; thread[18].Start();
-        //thread.Add(new Thread(() => ListRefresh_dcMobile_Find(pPageNumber, 19, webElements))); thread[19].IsBackground = true; thread[19].Start();
-        //foreach (Thread t in thread)
-        //        t.Join();
-        //VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
-
-        Console.WriteLine("[while " + pPageNumber + "] End");
-    }
-
-    private async Task ListRefresh_dcMobile(int pPageNumber, string pPageUrl)
-    {
-        //if (driverLock[pPageNumber]) return;
-        //else driverLock[pPageNumber] = true;
-
-        //Console.WriteLine("[while " + pPageNumber + "] Start");
-        //try
-        //{
-        //    driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
-        //} catch {}
-        //await Task.Delay(1);
-
-        //Console.WriteLine("[while " + pPageNumber + "] Url");
-
-        //IReadOnlyCollection<IWebElement> webElements = driver[pPageNumber].FindElements(By.ClassName("gall-detail-lnktb"));
-        //VM.oContentList[pPageNumber].ClearDataset();
-
-        //Console.WriteLine("[while " + pPageNumber + "] Find");
-
-        //var tk00 = ListRefresh_dcMobile_Find(pPageNumber, 0 , webElements);
-        //var tk01 = ListRefresh_dcMobile_Find(pPageNumber, 1 , webElements);
-        //var tk02 = ListRefresh_dcMobile_Find(pPageNumber, 2 , webElements);
-        //var tk03 = ListRefresh_dcMobile_Find(pPageNumber, 3 , webElements);
-        //var tk04 = ListRefresh_dcMobile_Find(pPageNumber, 4 , webElements);
-        //var tk05 = ListRefresh_dcMobile_Find(pPageNumber, 5 , webElements);
-        //var tk06 = ListRefresh_dcMobile_Find(pPageNumber, 6 , webElements);
-        //var tk07 = ListRefresh_dcMobile_Find(pPageNumber, 7 , webElements);
-        //var tk08 = ListRefresh_dcMobile_Find(pPageNumber, 8 , webElements);
-        //var tk09 = ListRefresh_dcMobile_Find(pPageNumber, 9 , webElements);
-        //var tk10 = ListRefresh_dcMobile_Find(pPageNumber, 10, webElements);
-        //var tk11 = ListRefresh_dcMobile_Find(pPageNumber, 11, webElements);
-        //var tk12 = ListRefresh_dcMobile_Find(pPageNumber, 12, webElements);
-        //var tk13 = ListRefresh_dcMobile_Find(pPageNumber, 13, webElements);
-        //var tk14 = ListRefresh_dcMobile_Find(pPageNumber, 14, webElements);
-        //var tk15 = ListRefresh_dcMobile_Find(pPageNumber, 15, webElements);
-        //var tk16 = ListRefresh_dcMobile_Find(pPageNumber, 16, webElements);
-        //var tk17 = ListRefresh_dcMobile_Find(pPageNumber, 17, webElements);
-        //var tk18 = ListRefresh_dcMobile_Find(pPageNumber, 18, webElements);
-        //var tk19 = ListRefresh_dcMobile_Find(pPageNumber, 19, webElements);
-
-        //var allTasks = new List<Task>
-        //{
-        //    tk00,
-        //    tk01,
-        //    tk02,
-        //    tk03,
-        //    tk04,
-        //    tk05,
-        //    tk06,
-        //    tk07,
-        //    tk08,
-        //    tk09,
-        //    tk10,
-        //    tk11,
-        //    tk12,
-        //    tk13,
-        //    tk14,
-        //    tk15,
-        //    tk16,
-        //    tk17,
-        //    tk18,
-        //    tk19,
-        //};
-
-        //while (allTasks.Any())
-        //{
-        //    Task finished = await Task.WhenAny(allTasks);
-
-        //    if (finished == tk00) { allTasks.Remove(tk00); }
-        //    else if (finished == tk01) { Console.WriteLine("" + 1);  allTasks.Remove(tk01); }
-        //    else if (finished == tk02) { Console.WriteLine("" + 2);  allTasks.Remove(tk02); }
-        //    else if (finished == tk03) { Console.WriteLine("" + 3);  allTasks.Remove(tk03); }
-        //    else if (finished == tk04) { Console.WriteLine("" + 4);  allTasks.Remove(tk04); }
-        //    else if (finished == tk05) { Console.WriteLine("" + 5);  allTasks.Remove(tk05); }
-        //    else if (finished == tk06) { Console.WriteLine("" + 6);  allTasks.Remove(tk06); }
-        //    else if (finished == tk07) { Console.WriteLine("" + 7);  allTasks.Remove(tk07); }
-        //    else if (finished == tk08) { Console.WriteLine("" + 8);  allTasks.Remove(tk08); }
-        //    else if (finished == tk09) { Console.WriteLine("" + 9);  allTasks.Remove(tk09); }
-        //    else if (finished == tk10) { Console.WriteLine("" + 10); allTasks.Remove(tk10); }
-        //    else if (finished == tk11) { Console.WriteLine("" + 11); allTasks.Remove(tk11); }
-        //    else if (finished == tk12) { Console.WriteLine("" + 12); allTasks.Remove(tk12); }
-        //    else if (finished == tk13) { Console.WriteLine("" + 13); allTasks.Remove(tk13); }
-        //    else if (finished == tk14) { Console.WriteLine("" + 14); allTasks.Remove(tk14); }
-        //    else if (finished == tk15) { Console.WriteLine("" + 15); allTasks.Remove(tk15); }
-        //    else if (finished == tk16) { Console.WriteLine("" + 16); allTasks.Remove(tk16); }
-        //    else if (finished == tk17) { Console.WriteLine("" + 17); allTasks.Remove(tk17); }
-        //    else if (finished == tk18) { Console.WriteLine("" + 18); allTasks.Remove(tk18); }
-        //    else if (finished == tk19) { Console.WriteLine("" + 19); allTasks.Remove(tk19); }
-        //    else { Console.WriteLine("any end"); allTasks.Remove(finished); }
-        //}
-
-        //VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
-
-        //Console.WriteLine("[while " + pPageNumber + "] End");
-        ////await Task.Delay(100);
-
-        //driverLock[pPageNumber] = false;
     }
 
     private void ListRefresh_dcMobile_Find(int pPageNumber, int pElementIndex, IReadOnlyCollection<IWebElement> pWebElement)

@@ -1,7 +1,7 @@
 ﻿
 
 
-.RGText {
+.RGTextColor {
     color: #000000;
 }
 
@@ -34,7 +34,7 @@
 
 /* 다크 모드에 적용할 스타일 정의 */
 @media (prefers-color-scheme: dark) {
-    .RGText {
+    .RGTextColor {
         color: #ffffff;
     }
 

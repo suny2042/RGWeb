@@ -7,6 +7,7 @@
 @* 뷰모델의 인스턴스 주입 *@
 @inject RGWeb.ViewModels.IContentViewModel VM
 @using static RGWeb.Models.ContentModel
+@using static RGWeb.Shared.ServerInfo
 
 
 @code {
@@ -28,17 +29,6 @@
     };
 
 
-    public class PageType
-    {
-        public int Value { get; set; }
-        public string Text { get; set; }
-    }
-    List<PageType> PageTypeComboBoxList = new List<PageType>
-    {
-        new PageType() { Value = 0, Text = "국내야구" },
-        new PageType() { Value = 1, Text = "만화" },
-        new PageType() { Value = 2, Text = "스트리머" },
-    };
     private void selectPage_0_ValueChange(ChangeEventArgs<int, PageType> args)
     {
         selectPage_ValueChange(0, args);
@@ -54,17 +44,6 @@
 
         // 콤보박스에서 갤러리 선택
         selectPage[pSelectPage] = args.Value;
-
-        if (VM.oContentList.Count > 0)
-            VM.oContentList[selectPage[pSelectPage]].PropertyChanged += async (sender, e) =>
-            {
-                await InvokeAsync(() =>
-                {
-                    CleanVisitedPage();
-                    StateHasChanged();
-                    JS.InvokeVoidAsync("JS_ListContentvisitedTitleTemp"); // 클라에서 선택했던 타이틀 임시 css 제거
-                });
-            };
     }
 
     protected override async Task OnInitializedAsync()
@@ -83,7 +62,6 @@
                     });
                 };
         }
-
 
         await base.OnInitializedAsync();
     }
@@ -152,7 +130,7 @@
                     <SplitterPanes>
                         <SplitterPane Size="40px" CssClass="p-1">
                             <ContentTemplate>
-                                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
+                                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
                                     <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
                                     <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
                                 </SfComboBox>
@@ -182,7 +160,7 @@
                     <SplitterPanes>
                         <SplitterPane Size="40px" CssClass="p-1">
                             <ContentTemplate>
-                                <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeComboBoxList" ShowClearButton="false" AllowFiltering="true">
+                                <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
                                     <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
                                     <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
                                 </SfComboBox>
@@ -209,7 +187,7 @@
         <SplitterPane>
             <ContentTemplate>
                 <div class="d-flex p-1 w-100 h-100">
-                    <iframe id="userIframe" class="rounded border RGBorderColor w-100 h-100"></iframe>
+                    <iframe id="userIframe" class="rounded border RGBorderColor w-100 h-100" src="ContentBlankPage"></iframe>
                 </div>
             </ContentTemplate>
         </SplitterPane>
