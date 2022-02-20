@@ -29,6 +29,61 @@
     private bool serverOnoff = false;
     SfSwitch<bool> serverSwitch;
 
+    // 리프레쉬 스케줄러
+    private List<PageType> refreshList_Lv1 = new List<PageType>();
+    private Queue<PageType> refreshQueue_Lv1 = new Queue<PageType>();
+    private List<PageType> refreshList_Lv2 = new List<PageType>();
+    private List<Queue<PageType>> refreshQueue_Lv2 = new List<Queue<PageType>>();
+    private List<PageType> refreshList_Lv3 = new List<PageType>();
+    private List<Queue<PageType>> refreshQueue_Lv3 = new List<Queue<PageType>>();
+
+    private void InitRefreshSchedule()  // 서버 on시 처음 한번만 실행
+    {
+        for (int i=0; i < PageTypeList.Count; i++)
+        {
+            switch(PageTypeList[i].RefreshLevel)
+            {
+                case 0:
+                    break;
+                case 1:
+                    refreshList_Lv1.Add(PageTypeList[i]);
+                    break;
+                case 2:
+                    refreshList_Lv2.Add(PageTypeList[i]);
+                    break;
+                case 3:
+                    refreshList_Lv3.Add(PageTypeList[i]);
+                    break;
+                case -1:
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void AddRefreshQueue(int pLevel, List<PageType> pList, List<Queue<PageType>> pQueue)
+    {
+        if (pQueue.Count <= 0 || pQueue.ElementAt(0).Any() == false) // 큐가 없으면 추가
+        {
+            pQueue.Clear();
+            for (int i = 0; i < pList.Count; i++)
+                {
+                    if (i % pLevel == 0) // 큐에 빈곳 없으면 리스트추가해서 큐 생성
+                        pQueue.Add(new Queue<PageType>());
+                    pQueue[pQueue.Count - 1].Enqueue(pList[i]);
+                }
+        }
+    }
+
+    private void LoadRefreshSchedule()
+    {
+        for (int i = 0; i < refreshList_Lv1.Count; i++)
+            refreshQueue_Lv1.Enqueue(refreshList_Lv1[i]);
+
+        AddRefreshQueue(2, refreshList_Lv2, refreshQueue_Lv2);
+        AddRefreshQueue(3, refreshList_Lv3, refreshQueue_Lv3);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         for (int i = 0; i < PageTypeList.Count; i++)
@@ -68,7 +123,7 @@
     {
         if (firstRender) // 첫번째 렌더때 실행
         {
-            ;
+            InitRefreshSchedule();
         }
         else             // 첫번째 렌더 후에 실행
         {
@@ -122,13 +177,13 @@
         // 인방갤 https://m.dcinside.com/board/ib_new2
 
         Stopwatch stopwatch = new Stopwatch();
-        List<Thread> thread = new List<Thread>();
+        List<Thread> threadList = new List<Thread>();
 
         while(serverOnoff)
         {
             stopwatch.Reset();
             stopwatch.Start();
-            thread.Clear();
+            threadList.Clear();
 
             //for (int i = 0; i < PageTypeList.Count; i++)  // i 값 순서가 불안정함
             //{
@@ -136,15 +191,20 @@
             //    thread[i].IsBackground = true; // 메인 쓰레드 종료시 강제종료
             //    thread[i].Start();
             //}
-            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(0, PageTypeList[0].Url))); thread[0].IsBackground = true; // 메인 쓰레드 종료시 강제종료
-            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(1, PageTypeList[1].Url))); thread[1].IsBackground = true; // 메인 쓰레드 종료시 강제종료
-            thread.Add(new Thread(() => ListRefresh_dcMobile_Thread(2, PageTypeList[2].Url))); thread[2].IsBackground = true; // 메인 쓰레드 종료시 강제종료
-            
-            thread[0].Start();
-            thread[1].Start();
-            thread[2].Start();
 
-            foreach (Thread t in thread)
+            LoadRefreshSchedule();
+
+            NewThread_Lv1(ref threadList);
+            NewThread_LvN(ref threadList, refreshQueue_Lv2);
+            NewThread_LvN(ref threadList, refreshQueue_Lv3);
+
+            foreach (Thread t in threadList)
+            {
+                t.IsBackground = true;
+                t.Start();
+            }
+
+            foreach (Thread t in threadList)
                 t.Join();
             VM.oContentList[0].OnPropertyChanged("All");
 
@@ -153,6 +213,25 @@
             await Task.Delay(10);
         }
 
+    }
+
+    private void NewThread_Lv1(ref List<Thread> pThreadList)
+    {
+        while (refreshQueue_Lv1.Any())
+        {
+            PageType lIndex = refreshQueue_Lv1.Dequeue();
+            pThreadList.Add(new Thread(() => ListRefresh_dcMobile_Thread(lIndex.Value, lIndex.Url)));
+        }
+    }
+
+    private void NewThread_LvN(ref List<Thread> pThreadList, List<Queue<PageType>> pQueue)
+    {
+        foreach(Queue<PageType> item in pQueue)
+            if (item.Any())
+            {
+                PageType lIndex = item.Dequeue();
+                pThreadList.Add(new Thread(() => ListRefresh_dcMobile_Thread(lIndex.Value, lIndex.Url)));
+            }
     }
 
     public async Task ServerEnd()
