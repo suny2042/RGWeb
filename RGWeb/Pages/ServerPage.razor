@@ -108,7 +108,7 @@
         driver.Clear();
         driverService.Clear();
 
-        Console.WriteLine("Driver Dispose");
+        Console.WriteLine("[Driver] Dispose");
     }
 
     // 페이지의 시작
@@ -204,7 +204,7 @@
                 i--;
                 refreshList_Lv1.Add(temp);
             }
-            else if (DiffMin <= 1)
+            else if (DiffMin == 1)
             {
                 if (pRefreshList_Lv[i].RefreshLevel == 2) continue;
                 PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 2;
@@ -213,7 +213,7 @@
                 i--;
                 refreshList_Lv2.Add(temp);
             }
-            else if (DiffMin <= 2)
+            else if (DiffMin == 2)
             {
                 if (pRefreshList_Lv[i].RefreshLevel == 3) continue;
                 PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 3;
