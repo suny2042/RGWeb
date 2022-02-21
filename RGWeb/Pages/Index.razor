@@ -53,6 +53,24 @@
             <div class="p-1 rounded border RGBorderColor" style="height: 200px;">
                 <ul class="">
                     <li>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                [안내] 문의 등은 방명록에 해주세요.
+                            </div>
+                            <div>
+
+                            </div>
+                            <div>
+                                <a class="d-flex align-items-center" href="https://gallog.dcinside.com/hamahama4444" style="text-decoration-line: none;" target="_blank">
+                                    ★★★★★&nbsp;<span class="sp-nick gonick"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <a href="InfoComponent" style="text-decoration-line: none;">
+                            <SfButton CssClass="e-secondary e-outline e-small">이 사이트에 대하여</SfButton>
+                        </a>
+                    </li>
+                    <li>
                         [220212] 서버구축
                     </li>
                     <li>
@@ -66,5 +84,8 @@
 </div>
 
 <div class="fixed-bottom text-center RGTextColor">
-    <i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount)
+    <div class="d-block align-items-center mx-auto">
+        <span title="현재 접속자 수"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount)</span>
+        <span title="현재 새로고침되는 주기(밀리초)"><i class="fa-solid fa-bolt"></i>&nbsp;@(ServerInfo.ServerRefreshTime)ms</span>
+    </div>
 </div>

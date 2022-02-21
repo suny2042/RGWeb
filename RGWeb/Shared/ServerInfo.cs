@@ -9,6 +9,8 @@
         public static int UserConnectCount_ProPC { get; set; } = 0;
         public static int UserConnectCount_ProMobile { get; set; } = 0;
 
+        public static long ServerRefreshTime { get; set; } = 0;
+
         public const int REFRESH_LEVEL_MAX = 3;
 
         public class PageType

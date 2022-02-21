@@ -172,13 +172,18 @@
             VM.oContentList[0].OnPropertyChanged("All");
             stopwatch.Stop();
             Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " 시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
+            ServerRefreshTime = stopwatch.ElapsedMilliseconds;
 
             // 스케줄러
-
+            PageSchedule();
 
             await Task.Delay(10);
         }
+    }
 
+    private void PageSchedule()
+    {
+        
     }
 
     private void LoadDriverSchedule(int pCount)
