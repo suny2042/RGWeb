@@ -15,18 +15,24 @@
 
         public class PageType
         {
+            /// <summary>
+            /// 해당 갤러리 코드값
+            /// </summary>
             public int Value { get; set; }
+            /// <summary>
+            /// 콤보박스에서 보이는 타이틀
+            /// </summary>
             public string Text { get; set; }
             /// <summary>
             /// 1: 디시인사이드 / 2: 디씨 마갤,미니갤 / 3: 아카라이브
             /// </summary>
             public int SiteType { get; set; }
             public string Url { get; set; }
-            public int bindDriverNumber { get; set; }
             /// <summary>
             /// 0: 자동 / -1: 정지 / 1: 최우선 / 2: 2번중한번 / 3: 3번중한번 / ~
             /// </summary>
             public int RefreshLevel { get; set; }
+            public DateTime LastContentDateTime { get; set; }
         }
         public static List<PageType> PageTypeList = new List<PageType>
         {

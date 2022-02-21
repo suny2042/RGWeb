@@ -26,6 +26,7 @@
     protected List<ChromeDriverService> driverService = new List<ChromeDriverService>();
     protected ChromeOptions options;
     protected List<ChromeDriver> driver = new List<ChromeDriver>();
+    protected Queue<ChromeDriver> driverQueue = new Queue<ChromeDriver>();
     private bool serverOnoff = false;
     SfSwitch<bool> serverSwitch;
 
@@ -154,10 +155,10 @@
 
             LoadRefreshSchedule();
 
-            NewThread_LvN(ref threadList, refreshQueue_Lv0);
-            NewThread_LvN(ref threadList, refreshQueue_Lv1);
+            NewThread_LvN(ref threadList, refreshQueue_Lv1); // 잘안움직이는것부터 먼저
             NewThread_LvN(ref threadList, refreshQueue_Lv2);
             NewThread_LvN(ref threadList, refreshQueue_Lv3);
+            NewThread_LvN(ref threadList, refreshQueue_Lv0);
 
             LoadDriverSchedule(threadList.Count);
 
@@ -171,19 +172,65 @@
                 t.Join();
             VM.oContentList[0].OnPropertyChanged("All");
             stopwatch.Stop();
-            Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " 시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
+            Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
             ServerRefreshTime = stopwatch.ElapsedMilliseconds;
 
             // 스케줄러
-            PageSchedule();
+            PageSchedule(refreshList_Lv1);
+            PageSchedule(refreshList_Lv2);
+            PageSchedule(refreshList_Lv3);
+            PageSchedule(refreshList_Lv0);
 
             await Task.Delay(10);
         }
     }
 
-    private void PageSchedule()
+    private void PageSchedule(List<PageType> pRefreshList_Lv)
     {
-        
+        DateTime now = DateTime.Now;
+        int DiffMin = 0;
+        PageType temp = null;
+
+        for (int i = 0;  i < pRefreshList_Lv.Count; i++)
+        {
+            DiffMin = (now - pRefreshList_Lv[i].LastContentDateTime).Minutes;
+            if (DiffMin == 0)
+            {
+                if (pRefreshList_Lv[i].RefreshLevel == 1) continue;
+                PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 1;
+                temp = pRefreshList_Lv[i];
+                pRefreshList_Lv.RemoveAt(i);
+                i--;
+                refreshList_Lv1.Add(temp);
+            }
+            else if (DiffMin <= 1)
+            {
+                if (pRefreshList_Lv[i].RefreshLevel == 2) continue;
+                PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 2;
+                temp = pRefreshList_Lv[i];
+                pRefreshList_Lv.RemoveAt(i);
+                i--;
+                refreshList_Lv2.Add(temp);
+            }
+            else if (DiffMin <= 2)
+            {
+                if (pRefreshList_Lv[i].RefreshLevel == 3) continue;
+                PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 3;
+                temp = pRefreshList_Lv[i];
+                pRefreshList_Lv.RemoveAt(i);
+                i--;
+                refreshList_Lv3.Add(temp);
+            }
+            else
+            {
+                if (pRefreshList_Lv[i].RefreshLevel == 0) continue;
+                PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 0;
+                temp = pRefreshList_Lv[i];
+                pRefreshList_Lv.RemoveAt(i);
+                i--;
+                refreshList_Lv0.Add(temp);
+            }
+        }
     }
 
     private void LoadDriverSchedule(int pCount)
@@ -196,6 +243,9 @@
             driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromMilliseconds(3000);   // 페이지 접속시 지정한 시간 이후까지 로드가 안되면 에러로 빠짐
             driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);  // 탐색시 object가 없으면 대기하는 시간.
         }
+
+        for (int i = 0; i < driver.Count; i++)
+                driverQueue.Enqueue(driver[i]);
     }
 
     private void NewThread_LvN(ref List<Thread> pThreadList, List<Queue<PageType>> pQueue)
@@ -205,7 +255,7 @@
             {
                 PageType lIndex = item.Dequeue();
                 pThreadList.Add(new Thread(() => ListRefresh_dcMobile_Thread(lIndex)));
-                //Console.WriteLine("[NewThread_LvN] " + (pThreadList.Count - 1) + "|" + lIndex.Value + "|" + lIndex.bindDriverNumber + " : " + lIndex.Text);
+                Console.WriteLine("[NewThread_LvN lv/Th/val] " + lIndex.RefreshLevel + "|" + (pThreadList.Count - 1) + "|" +  lIndex.Value + " : " + lIndex.Text);
             }
     }
 
@@ -252,56 +302,36 @@
                     pQueue.Add(new Queue<PageType>());
                 }
 
-                pList[i].bindDriverNumber = GetBindDriverNumber(pLevel, i);
                 pQueue[pQueue.Count - 1].Enqueue(pList[i]);
             }
         }
     }
-    
-    private int GetBindDriverNumber(int pLevel, int pListIndex)
-    {
-        int lResult = 0;
-        switch (pLevel)
-        {
-            case 0:
-                lResult = 0;
-                break;
-            case 1:
-                lResult = 1 + pListIndex;
-                break;
-            case 2:
-                lResult = 1 + refreshList_Lv1.Count;
-                lResult += pListIndex / pLevel;
-                break;
-            case 3:
-                lResult = 1 + refreshList_Lv1.Count + refreshList_Lv2.Count;
-                lResult += pListIndex / pLevel;
-                break;
-        }
-
-        return lResult;
-    }
 
     private void LoadRefreshSchedule()
     {
-        AddRefreshQueue(0, refreshList_Lv0, refreshQueue_Lv0);
         AddRefreshQueue(1, refreshList_Lv1, refreshQueue_Lv1);
         AddRefreshQueue(2, refreshList_Lv2, refreshQueue_Lv2);
         AddRefreshQueue(3, refreshList_Lv3, refreshQueue_Lv3);
+        AddRefreshQueue(0, refreshList_Lv0, refreshQueue_Lv0);
     }
 
     private void ListRefresh_dcMobile_Thread(PageType pIndex)
     {
+        ChromeDriver lDriver = driverQueue.Dequeue();
         try
         {
-            driver[pIndex.bindDriverNumber].Navigate().GoToUrl(pIndex.Url);
+            lDriver.Navigate().GoToUrl(pIndex.Url);
         } catch {}
 
-        IReadOnlyCollection<IWebElement> webElements = driver[pIndex.bindDriverNumber].FindElements(By.ClassName("gall-detail-lnktb"));
+        IReadOnlyCollection<IWebElement> webElements = lDriver.FindElements(By.ClassName("gall-detail-lnktb"));
         VM.oContentList[pIndex.Value].ClearDataset();
 
         for (int i = 0; i < 20; i++)
             ListRefresh_dcMobile_Find(pIndex, i , webElements);
+
+        // Last 게시물을 저장 (글 올린 시간)
+        if (VM.oContentList is not null && VM.oContentList[pIndex.Value].dataSet.Count > 0)
+            pIndex.LastContentDateTime = VM.oContentList[pIndex.Value].dataSet[VM.oContentList[pIndex.Value].dataSet.Count - 1].date;
     }
 
     private void ListRefresh_dcMobile_Find(PageType pIndex, int pElementIndex, IReadOnlyCollection<IWebElement> pWebElement)
@@ -319,10 +349,15 @@
             return;
         } // 여기부터 에러면 그냥 리턴
 
+        // 디씨 마갤/미니갤 대응
+        int lElementNumber = 0;
+        if (pIndex.SiteType == 2)
+            lElementNumber++;
+
         string lUserIconUrl = "";
         try
         {
-            lUserIconUrl = lBottomLabel.ElementAt(0).FindElement(By.TagName("span")).GetAttribute("class");
+            lUserIconUrl = lBottomLabel.ElementAt(lElementNumber + 0).FindElement(By.TagName("span")).GetAttribute("class");
         }
         catch { }
 
@@ -342,10 +377,11 @@
                     num = UrlToNumber(lLeftLabel.GetAttribute("href")),
                     url = lLeftLabel.GetAttribute("href"),
                     title = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.ClassName("subjectin")).Text,
-                    userName = lBottomLabel.ElementAt(0).Text,
-                    viewCount = lBottomLabel.ElementAt(2).Text.Remove(0, 3),
-                    goodCount = lBottomLabel.ElementAt(3).Text.Remove(0, 3),
-                    contentDate = lBottomLabel.ElementAt(1).Text,
+                    userName = lBottomLabel.ElementAt(lElementNumber + 0).Text,
+                    viewCount = lBottomLabel.ElementAt(lElementNumber + 2).Text.Remove(0, 3),
+                    goodCount = lBottomLabel.ElementAt(lElementNumber + 3).Text.Remove(0, 3),
+                    contentDate = lBottomLabel.ElementAt(lElementNumber + 1).Text,
+                    date = fnDcinsideStrToDate(lBottomLabel.ElementAt(lElementNumber + 1).Text),
                     userIconUrl = lUserIconUrl,
                     userIp = lUserIp,
                     contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
@@ -445,18 +481,49 @@
         //}
     }
 
-    // xxxx-xx-xx xx:xx:xx 형식 문자열을 DateTime으로 반환
-    public DateTime StrToDate(string pStr)
+    // DcInsise 문자열을 DateTime으로 반환
+    public DateTime fnDcinsideStrToDate(string pStr)
     {
-        if (pStr.Length != 19) return DateTime.Now;
+        DateTime now = new DateTime();
+        DateTime dt = new DateTime();
+        
+        if (pStr.Length == 5)
+        {
+            if (pStr[2] == ':') // hh:mm
+                dt = new DateTime(now.Year
+                , now.Month
+                , now.Day
+                , int.Parse(pStr.Substring(0, 2))
+                , int.Parse(pStr.Substring(3, 2))
+                , now.Second
+                );
+            else                // mm.dd
+                dt = new DateTime(now.Year
+                , int.Parse(pStr.Substring(0, 2))
+                , int.Parse(pStr.Substring(3, 2))
+                , now.Hour
+                , now.Minute
+                , now.Second
+                );
+        }
+        else if (pStr.Length == 19) // xxxx-xx-xx xx:xx:xx
+            dt = new DateTime(int.Parse(pStr.Substring(0, 4))
+            , int.Parse(pStr.Substring(5, 2))
+            , int.Parse(pStr.Substring(8, 2))
+            , int.Parse(pStr.Substring(11, 2))
+            , int.Parse(pStr.Substring(14, 2))
+            , int.Parse(pStr.Substring(17, 2))
+            );
+        else if (pStr.Length == 8)  // yy.mm.dd
+            dt = new DateTime(2000 + int.Parse(pStr.Substring(0, 2))
+            , int.Parse(pStr.Substring(3, 2))
+            , int.Parse(pStr.Substring(6, 2))
+            , now.Hour
+            , now.Minute
+            , now.Second
+            );
 
-        return new DateTime(int.Parse(pStr.Substring(0, 4))
-        , int.Parse(pStr.Substring(5, 2))
-        , int.Parse(pStr.Substring(8, 2))
-        , int.Parse(pStr.Substring(11, 2))
-        , int.Parse(pStr.Substring(14, 2))
-        , int.Parse(pStr.Substring(17, 2))
-        );
+        return dt;
     }
 
     public int UrlToNumber(string pUrl)
