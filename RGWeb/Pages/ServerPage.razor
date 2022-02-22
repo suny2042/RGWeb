@@ -286,7 +286,8 @@
         }
         finally
         {
-            objStream.Close();
+            if (objStream is not null)
+                objStream.Close();
         }
 
         string siteXPath = "/html/body/div/div/div/section[3]/ul[2]/li";
