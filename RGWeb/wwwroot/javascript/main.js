@@ -224,9 +224,13 @@ window.JS_Collapse = (pButtonID, pElementID) => {
 
 
 
-window.JS_goToIframe = (pUrl, pTitleId) => {
+window.JS_goToIframePro = (pUrl, pTitleId) => {
     $('#userIframe').attr('src', pUrl);
     $('#' + pTitleId).attr('class', 'ListContentvisitedTitleTemp');
+}
+
+window.JS_goToIframeLite = (pUrl) => {
+    $('#userIframe').attr('src', pUrl);
 }
 
 window.JS_ListContentvisitedTitleTemp = () => {

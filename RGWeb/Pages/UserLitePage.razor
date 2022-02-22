@@ -1,0 +1,152 @@
+﻿@page "/rg/UserLitePage"
+@*〈공통〉*@
+@implements IDisposable
+@inject IJSRuntime JS               // 자바스크립트 관련
+@inject ProtectedLocalStorage LS    // 로컬스토리지 관련
+@inject NavigationManager NM        // 페이지 이동 관련
+@* 뷰모델의 인스턴스 주입 *@
+@inject RGWeb.ViewModels.IContentViewModel VM
+@using static RGWeb.Models.ContentModel
+@using static RGWeb.Shared.ServerInfo
+
+
+@code {
+    // 현재 선택한 페이지 수들
+    private List<int> selectPage = new List<int>()
+    {
+        0, 1
+    };
+
+
+    private void selectPage_0_ValueChange(ChangeEventArgs<int, PageType> args)
+    {
+        selectPage_ValueChange(0, args);
+    }
+    private void selectPage_1_ValueChange(ChangeEventArgs<int, PageType> args)
+    {
+        selectPage_ValueChange(1, args);
+    }
+    private void selectPage_ValueChange(int pSelectPage, ChangeEventArgs<int, PageType> args)
+    {
+        if (VM.oContentList.Count > 0)
+            VM.oContentList[selectPage[pSelectPage]].PropertyChanged -= OnPropertyChangedHandler;
+
+        // 콤보박스에서 갤러리 선택
+        selectPage[pSelectPage] = args.Value;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ServerInfo.UserConnectCount++;
+
+        if (VM.oContentList.Count > 0)
+        {
+            for (int i = 0; i < selectPage.Count; i++)
+                VM.oContentList[selectPage[i]].PropertyChanged += async (sender, e) =>
+                {
+                    await InvokeAsync(() =>
+                    {
+                        StateHasChanged();
+                });
+                };
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    async void OnPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    // 메모리 누수 방지
+    public void Dispose()
+    {
+        ServerInfo.UserConnectCount--;
+        if (VM.oContentList.Count > 0)
+            for (int i = 0; i < selectPage.Count; i++)
+                VM.oContentList[selectPage[i]].PropertyChanged -= OnPropertyChangedHandler;
+    }
+
+    // 페이지가 로드 될 시 (비동기)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) // 첫번째 렌더때 실행
+        {
+            ;
+        }
+        else             // 첫번째 렌더 후에 실행
+        {
+            ;
+        }
+    }
+
+    string iframeUrl = "/ContentBlankPage";
+}
+
+
+<div class="d-flex flex-row h-100">
+    <div class="" style="width: 250px;">
+        <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+            <SplitterPanes>
+                <SplitterPane Size="40px" CssClass="p-1">
+                    <ContentTemplate>
+                        <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
+                        </SfComboBox>
+                    </ContentTemplate>
+                </SplitterPane>
+                <SplitterPane CssClass="p-1">
+                    <ContentTemplate>
+                        <div class="d-flex flex-column m-0">
+                            @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null)
+                            {
+                                foreach (Content item in VM.oContentList[selectPage[0]].dataSet)
+                                {
+                                    <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0"></RGWeb.Component.ContentComponent>
+                                }
+                            }
+                        </div>
+                    </ContentTemplate>
+                </SplitterPane>
+            </SplitterPanes>
+        </SfSplitter>
+    </div>
+    <div class="" style="width: 250px;">
+        <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+            <SplitterPanes>
+                <SplitterPane Size="40px" CssClass="p-1">
+                    <ContentTemplate>
+                        <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
+                        </SfComboBox>
+                    </ContentTemplate>
+                </SplitterPane>
+                <SplitterPane CssClass="p-1">
+                    <ContentTemplate>
+                        <div class="d-flex flex-column m-0">
+                            @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null)
+                            {
+                                foreach (Content item in VM.oContentList[selectPage[1]].dataSet)
+                                {
+                                    <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1"></RGWeb.Component.ContentComponent>
+                                }
+                            }
+                        </div>
+                    </ContentTemplate>
+                </SplitterPane>
+            </SplitterPanes>
+        </SfSplitter>
+    </div>
+    <div class="flex-grow-1">
+        <div class="d-flex px-1 w-100 h-100">
+            <iframe id="userIframe" class="rounded border RGBorderColor w-100 h-100" src="ContentBlankPage"></iframe>
+        </div>
+    </div>
+</div>
+
