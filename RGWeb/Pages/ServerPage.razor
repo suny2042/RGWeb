@@ -101,7 +101,7 @@
 
     public async Task ServerEnd()
     {
-        Console.WriteLine("[Driver] Dispose");
+        Console.WriteLine("[ListRefresh] Dispose");
     }
 
     // 페이지의 시작
@@ -289,7 +289,7 @@
 
         VM.oContentList[pIndex.Value].ClearDataset();
 
-        for (int i =0; i < article.Count; i++)
+        for (int i = 0; i < article.Count; i++)
         {
             if (article[i].HasClass("adv-inner")) continue;
 
@@ -325,11 +325,11 @@
             };
 
             VM.oContentList[pIndex.Value].InsertRow(n);
-        }
 
-        // Last 게시물을 저장 (글 올린 시간)
-        if (VM.oContentList is not null && VM.oContentList[pIndex.Value].dataSet.Count > 0)
-            pIndex.LastContentDateTime = VM.oContentList[pIndex.Value].dataSet[VM.oContentList[pIndex.Value].dataSet.Count - 1].date;
+            // Last 게시물을 저장 (글 올린 시간)
+            if (i == article.Count - 1)
+                pIndex.LastContentDateTime = n.date;
+        }
     }
 
     // DcInsise 문자열을 DateTime으로 반환
