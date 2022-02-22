@@ -17,5 +17,7 @@ namespace RGWeb.ViewModels
         #endregion
 
         List<ModelDataSet<Content>> oContentList { get; set; }
+
+        public bool serverOnoff { get; set; }
     }
 }

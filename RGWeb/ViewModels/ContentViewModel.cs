@@ -11,5 +11,7 @@ namespace RGWeb.ViewModels
             get => _oContentList;
             set => SetValue(ref _oContentList, value);
         }
+
+        public bool serverOnoff { get; set; } = false;
     }
 }

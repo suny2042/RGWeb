@@ -15,12 +15,13 @@
 @using System.Diagnostics;
 @using System.Net;
 @using HtmlAgilityPack;
+@using System.Web
 
 <h3 class="RGTextColor">Server</h3>
 
 <div class="d-flex align-items-center RGTextColor">
-    Server Start&nbsp;<SfSwitch @ref="serverSwitch" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>
-    <p>쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms</p>
+    Server Start&nbsp;<SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>
+    &nbsp;쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms
 </div>
     
 
@@ -28,8 +29,6 @@
 @code {
     Stopwatch stopwatch = new Stopwatch();
     List<Thread> threadList = new List<Thread>();
-    private bool serverOnoff = false;
-    SfSwitch<bool> serverSwitch;
 
     // 리프레쉬 스케줄러
     private List<PageType> refreshList_Lv0 = new List<PageType>(); // 자동
@@ -70,10 +69,10 @@
     // 메모리 누수 방지
     public void Dispose()
     {
-        for (int i = 0; i < VM.oContentList.Count; i++)
-            VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
+        //for (int i = 0; i < VM.oContentList.Count; i++)
+        //    VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
 
-        ServerEnd();
+        //ServerEnd();
     }
 
     // 페이지가 로드 될 시 (비동기)
@@ -91,9 +90,9 @@
 
     private void serverOnoff_ValueChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {
-        serverOnoff = args.Checked;
+        //VM.serverOnoff = args.Checked;
 
-        if (serverOnoff)
+        if (VM.serverOnoff)
             ServerStart();
         else
             ServerEnd();
@@ -109,7 +108,7 @@
     {
         Console.WriteLine("[ListRefresh] Start");
 
-        while(serverOnoff)
+        while(VM.serverOnoff)
         {
             stopwatch.Reset();
             stopwatch.Start();
@@ -117,7 +116,7 @@
 
             LoadRefreshSchedule();
 
-            NewThread_LvN(ref threadList, refreshQueue_Lv1); // 잘안움직이는것부터 먼저
+            NewThread_LvN(ref threadList, refreshQueue_Lv1);
             NewThread_LvN(ref threadList, refreshQueue_Lv2);
             NewThread_LvN(ref threadList, refreshQueue_Lv3);
             NewThread_LvN(ref threadList, refreshQueue_Lv0);
@@ -132,8 +131,9 @@
                 t.Join();
             VM.oContentList[0].OnPropertyChanged("All");
             stopwatch.Stop();
-            Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + stopwatch.ElapsedMilliseconds + "ms");
             ServerRefreshTime = stopwatch.ElapsedMilliseconds;
+            stopwatch.Start();
+            Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
 
             // 스케줄러
             PageSchedule(refreshList_Lv1);
@@ -141,7 +141,10 @@
             PageSchedule(refreshList_Lv3);
             PageSchedule(refreshList_Lv0);
 
-            await Task.Delay(1000);
+            if (ServerRefreshTime < 1000)       // 최소 1초 딜레이 보장
+                await Task.Delay(1000 - (int)ServerRefreshTime);
+            stopwatch.Stop();
+            //Console.WriteLine("타임 : " + stopwatch.ElapsedMilliseconds);
         }
     }
 
@@ -270,18 +273,21 @@
         wrGETURL.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1";
         wrGETURL.Timeout = 3000;
 
-        Stream objStream;
+        Stream objStream = null;
+        HtmlDocument doc = new HtmlDocument();
         try
         {
             objStream = wrGETURL.GetResponse().GetResponseStream();
+            doc.Load(objStream);
         }
         catch
         {
             return;
         }
-        HtmlDocument doc = new HtmlDocument();
-        doc.Load(objStream);
-        objStream.Close();
+        finally
+        {
+            objStream.Close();
+        }
 
         string siteXPath = "/html/body/div/div/div/section[3]/ul[2]/li";
         if (pIndex.SiteType == 3) siteXPath = "/html/body/div/div/div/div/section[3]/ul[2]/li";     // 미니갤
@@ -314,12 +320,12 @@
                 lUserIconUrl = lBottomLabel[lElementNumber + 0].SelectSingleNode("span").GetAttributeValue("class", "");
             }
             catch { }
-
+            
             Content n = new Content()
             {
                 num = UrlToNumber(lLeftLabel.GetAttributeValue("href", "")),
                 url = lLeftLabel.GetAttributeValue("href", ""),
-                title = lLeftLabel.SelectSingleNode("span/span[2]").InnerText,
+                title = HttpUtility.HtmlDecode(lLeftLabel.SelectSingleNode("span/span[2]").InnerText),
                 userName = lBottomLabel[lElementNumber + 0].InnerText,
                 viewCount = lBottomLabel[lElementNumber + 2].InnerText.Remove(0, 3),
                 goodCount = lBottomLabel[lElementNumber + 3].InnerText.Remove(0, 3),
