@@ -24,7 +24,7 @@
             /// </summary>
             public string Text { get; set; }
             /// <summary>
-            /// 1: 디시인사이드 / 2: 디씨 마갤,미니갤(분류있는갤) / 3: 아카라이브
+            /// 1: 디시인사이드 / 2: 디씨마갤(분류있는갤) 3: 디씨미니갤 / 11: 아카라이브
             /// </summary>
             public int SiteType { get; set; }
             /// <summary>
@@ -52,23 +52,23 @@
         }
         public static List<PageType> PageTypeList = new List<PageType>
         {
-            new PageType() { Value =  0, SiteType = 1, RefreshLevel = 1, Text = "국내야구", Url="https://m.dcinside.com/board/baseball_new10" },
+            new PageType() { Value =  0, SiteType = 1, RefreshLevel = 1, Text = "국내야구", FixedRefreshLevel = true, Url="https://m.dcinside.com/board/baseball_new10" },
             new PageType() { Value =  1, SiteType = 1, RefreshLevel = 0, Text = "만화", Url="https://m.dcinside.com/board/comic_new3" },
-            //new PageType() { Value =  2, SiteType = 1, RefreshLevel = 0, Text = "스트리머", Url="https://m.dcinside.com/board/stream_new1" },
-            //new PageType() { Value =  3, SiteType = 1, RefreshLevel = 0, Text = "인터넷방송", Url="https://m.dcinside.com/board/ib_new2" },
-            //new PageType() { Value =  4, SiteType = 2, RefreshLevel = 0, Text = "이세계아이돌", Url="https://m.dcinside.com/mini/isekaidol" },
+            new PageType() { Value =  2, SiteType = 1, RefreshLevel = 0, Text = "스트리머", Url="https://m.dcinside.com/board/stream_new1" },
+            new PageType() { Value =  3, SiteType = 1, RefreshLevel = 0, Text = "인터넷방송", Url="https://m.dcinside.com/board/ib_new2" },
+            new PageType() { Value =  4, SiteType = 3, RefreshLevel = 0, Text = "이세계아이돌", Url="https://m.dcinside.com/mini/isekaidol" },
 
-            //new PageType() { Value =  5, SiteType = 1, RefreshLevel = 0, Text = "리그오브레전드", Url="https://m.dcinside.com/board/leagueoflegends4" },
-            //new PageType() { Value =  6, SiteType = 2, RefreshLevel = 0, Text = "로스트아크", Url="https://m.dcinside.com/board/lostark" },
-            //new PageType() { Value =  7, SiteType = 1, RefreshLevel = 0, Text = "기타국내드라마", Url="https://m.dcinside.com/board/drama_new3" },
-            //new PageType() { Value =  8, SiteType = 1, RefreshLevel = 0, Text = "여자연예인", Url="https://m.dcinside.com/board/w_entertainer" },
-            //new PageType() { Value =  9, SiteType = 1, RefreshLevel = 0, Text = "남자연예인", Url="https://m.dcinside.com/board/m_entertainer_new1" },
-            //new PageType() { Value = 10, SiteType = 1, RefreshLevel = 0, Text = "비트코인", Url="https://m.dcinside.com/board/bitcoins_new1" },
-            //new PageType() { Value = 11, SiteType = 2, RefreshLevel = 0, Text = "키즈나아이", Url="https://m.dcinside.com/board/kizunaai" },
-            //new PageType() { Value = 12, SiteType = 2, RefreshLevel = 0, Text = "원신", Url="https://m.dcinside.com/board/onshinproject" },
+            new PageType() { Value =  5, SiteType = 1, RefreshLevel = 0, Text = "리그오브레전드", Url="https://m.dcinside.com/board/leagueoflegends4" },
+            new PageType() { Value =  6, SiteType = 2, RefreshLevel = 0, Text = "로스트아크", Url="https://m.dcinside.com/board/lostark" },
+            new PageType() { Value =  7, SiteType = 1, RefreshLevel = 0, Text = "기타국내드라마", Url="https://m.dcinside.com/board/drama_new3" },
+            new PageType() { Value =  8, SiteType = 1, RefreshLevel = 0, Text = "여자연예인", Url="https://m.dcinside.com/board/w_entertainer" },
+            new PageType() { Value =  9, SiteType = 1, RefreshLevel = 0, Text = "남자연예인", Url="https://m.dcinside.com/board/m_entertainer_new1" },
+            new PageType() { Value = 10, SiteType = 1, RefreshLevel = 0, Text = "비트코인", Url="https://m.dcinside.com/board/bitcoins_new1" },
+            new PageType() { Value = 11, SiteType = 2, RefreshLevel = 0, Text = "키즈나아이", Url="https://m.dcinside.com/board/kizunaai" },
+            new PageType() { Value = 12, SiteType = 2, RefreshLevel = 0, Text = "원신", Url="https://m.dcinside.com/board/onshinproject" },
 
-            //new PageType() { Value = 13, SiteType = 3, RefreshLevel = 0, Text = "원신", Url="https://arca.live/b/genshin" },
-            //new PageType() { Value = 14, SiteType = 3, RefreshLevel = 0, Text = "에픽세븐", Url="https://arca.live/b/epic7" },
+            //new PageType() { Value = 13, SiteType = 11, RefreshLevel = 0, Text = "원신", Url="https://arca.live/b/genshin" },
+            //new PageType() { Value = 14, SiteType = 11, RefreshLevel = 0, Text = "에픽세븐", Url="https://arca.live/b/epic7" },
         };
     }
 }

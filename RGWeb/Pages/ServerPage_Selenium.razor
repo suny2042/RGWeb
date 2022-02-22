@@ -1,4 +1,4 @@
-﻿@page "/adm/ServerPage"
+﻿@page "/adm/ServerPage_Selenium"
 @*〈공통〉*@
 @implements IDisposable
 @inject IJSRuntime JS               // 자바스크립트 관련
@@ -13,21 +13,20 @@
 @using OpenQA.Selenium;
 @using OpenQA.Selenium.Chrome;
 @using System.Diagnostics;
-@using System.Net;
-@using HtmlAgilityPack;
 
 <h3 class="RGTextColor">Server</h3>
 
 <div class="d-flex align-items-center RGTextColor">
     Server Start&nbsp;<SfSwitch @ref="serverSwitch" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>
-    <p>쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms</p>
 </div>
     
 
 
 @code {
-    Stopwatch stopwatch = new Stopwatch();
-    List<Thread> threadList = new List<Thread>();
+    protected List<ChromeDriverService> driverService = new List<ChromeDriverService>();
+    protected ChromeOptions options;
+    protected List<ChromeDriver> driver = new List<ChromeDriver>();
+    protected Queue<ChromeDriver> driverQueue = new Queue<ChromeDriver>();
     private bool serverOnoff = false;
     SfSwitch<bool> serverSwitch;
 
@@ -101,13 +100,44 @@
 
     public async Task ServerEnd()
     {
+        for (int i = 0; i < driver.Count; i++)
+        {
+            driver[i].Dispose();
+            driverService[i].Dispose();
+        }
+        driver.Clear();
+        driverService.Clear();
+
         Console.WriteLine("[Driver] Dispose");
     }
 
     // 페이지의 시작
     public async Task ServerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
     {
+        for (int i = 0; i < PageTypeList.Count; i++)
+            if (driver is not null && driver.Count > 0 && driver[i] is not null)
+                driver[i].Quit();
+        driverService.Clear();
+        driver.Clear();
+
+        // System.IO.Directory.GetCurrentDirectory() + @"\bin\Debug\net6.0\"
+        options = new ChromeOptions();
+        options.AddArgument("-headless");
+        options.AddArgument("-disable-gpu");
+        //options.AddArgument("-disable-images");
+        //options.SetPreference("profile.default_content_setting_values.images", 2);
+        options.AddArgument("--log-level=3");
+        options.AddArgument("--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1");
+        // 성능개선대책
+        //options.AddArguments("enable-automation");
+        //options.AddArguments("--no-sandbox");
+        //options.AddArguments("--disable-extensions");
+        //options.AddArguments("--dns-prefetch-disable");
+
         Console.WriteLine("[ListRefresh] Start");
+
+        Stopwatch stopwatch = new Stopwatch();
+        List<Thread> threadList = new List<Thread>();
 
         while(serverOnoff)
         {
@@ -121,6 +151,8 @@
             NewThread_LvN(ref threadList, refreshQueue_Lv2);
             NewThread_LvN(ref threadList, refreshQueue_Lv3);
             NewThread_LvN(ref threadList, refreshQueue_Lv0);
+
+            LoadDriverSchedule(threadList.Count);
 
             foreach (Thread t in threadList)
             {
@@ -153,10 +185,8 @@
 
         for (int i = 0;  i < pRefreshList_Lv.Count; i++)
         {
-            if (pRefreshList_Lv[i].FixedRefreshLevel == true) continue; // 고정레벨은 무시
-
             DiffMin = (now - pRefreshList_Lv[i].LastContentDateTime).Minutes;
-            if (DiffMin <= 1)
+            if (DiffMin == 0)
             {
                 if (pRefreshList_Lv[i].RefreshLevel == 1) continue;
                 PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 1;
@@ -165,7 +195,7 @@
                 i--;
                 refreshList_Lv1.Add(temp);
             }
-            else if (DiffMin <= 2)
+            else if (DiffMin == 1)
             {
                 if (pRefreshList_Lv[i].RefreshLevel == 2) continue;
                 PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 2;
@@ -174,7 +204,7 @@
                 i--;
                 refreshList_Lv2.Add(temp);
             }
-            else if (DiffMin <= 3)
+            else if (DiffMin == 2)
             {
                 if (pRefreshList_Lv[i].RefreshLevel == 3) continue;
                 PageTypeList[pRefreshList_Lv[i].Value].RefreshLevel = 3;
@@ -193,6 +223,22 @@
                 refreshList_Lv0.Add(temp);
             }
         }
+    }
+
+    private void LoadDriverSchedule(int pCount)
+    {
+        for (int i = driver.Count; i < pCount; i++)     // 현재 생성된건 유지하고 새로 필요한 경우 드라이버 생성
+        {
+            driverService.Add(ChromeDriverService.CreateDefaultService());
+            driverService[i].Port = 44000 + i;
+            driver.Add(new ChromeDriver(driverService[i], options));
+            driver[i].Manage().Timeouts().PageLoad = TimeSpan.FromMilliseconds(3000);   // 페이지 접속시 지정한 시간 이후까지 로드가 안되면 에러로 빠짐
+            driver[i].Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);  // 탐색시 object가 없으면 대기하는 시간.
+        }
+
+        driverQueue.Clear();
+        for (int i = 0; i < driver.Count; i++)
+            driverQueue.Enqueue(driver[i]);
     }
 
     private void NewThread_LvN(ref List<Thread> pThreadList, List<Queue<PageType>> pQueue)
@@ -264,72 +310,168 @@
 
     private void ListRefresh_dcMobile_Thread(PageType pIndex)
     {
-        HttpWebRequest wrGETURL;
-        wrGETURL = (HttpWebRequest)WebRequest.Create(pIndex.Url);
-        wrGETURL.Method = "GET";
-        wrGETURL.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1";
-        wrGETURL.Timeout = 3000;
-
-        Stream objStream;
-        objStream = wrGETURL.GetResponse().GetResponseStream();
-        HtmlDocument doc = new HtmlDocument();
-        doc.Load(objStream);
-        objStream.Close();
-
-        string siteXPath = "/html/body/div/div/div/section[3]/ul[2]/li";
-        if (pIndex.SiteType == 3) siteXPath = "/html/body/div/div/div/div/section[3]/ul[2]/li";     // 미니갤
-        HtmlNodeCollection article = doc.DocumentNode.SelectNodes(siteXPath);
-        List<Content> list = new List<Content>();
-
-        if (article is null)
+        ChromeDriver lDriver = driverQueue.Dequeue();
+        try
         {
-            Console.WriteLine("[ListRefresh_dcMobile_Thread] " + pIndex.Text + " " + "Error");
-            return;
-        }
+            lDriver.Navigate().GoToUrl(pIndex.Url);
+        } catch {}
 
+        IReadOnlyCollection<IWebElement> webElements = lDriver.FindElements(By.ClassName("gall-detail-lnktb"));
         VM.oContentList[pIndex.Value].ClearDataset();
 
-        for (int i =0; i < article.Count; i++)
-        {
-            if (article[i].HasClass("adv-inner")) continue;
-
-            HtmlNode lLeftLabel = article[i].SelectSingleNode("div/a[1]");
-            HtmlNodeCollection lBottomLabel = lLeftLabel.SelectNodes("ul/li");
-
-            // 디씨 마갤/미니갤 대응
-            int lElementNumber = 0;
-            if (pIndex.SiteType == 2 || pIndex.SiteType == 3)
-                lElementNumber++;
-
-            string lUserIconUrl = "";
-            try
-            {
-                lUserIconUrl = lBottomLabel[lElementNumber + 0].SelectSingleNode("span").GetAttributeValue("class", "");
-            }
-            catch { }
-
-            Content n = new Content()
-            {
-                num = UrlToNumber(lLeftLabel.GetAttributeValue("href", "")),
-                url = lLeftLabel.GetAttributeValue("href", ""),
-                title = lLeftLabel.SelectSingleNode("span/span[2]").InnerText,
-                userName = lBottomLabel[lElementNumber + 0].InnerText,
-                viewCount = lBottomLabel[lElementNumber + 2].InnerText.Remove(0, 3),
-                goodCount = lBottomLabel[lElementNumber + 3].InnerText.Remove(0, 3),
-                contentDate = lBottomLabel[lElementNumber + 1].InnerText,
-                date = fnDcinsideStrToDate(lBottomLabel[lElementNumber + 1].InnerText),
-                userIconUrl = lUserIconUrl,
-                userIp = "",
-                contentIconUrl = lLeftLabel.SelectSingleNode("span/span[1]").GetAttributeValue("class", ""),
-                commentCount = article[i].SelectSingleNode("div/a[2]/span").InnerText,
-            };
-
-            VM.oContentList[pIndex.Value].InsertRow(n);
-        }
+        for (int i = 0; i < 20; i++)
+            ListRefresh_dcMobile_Find(pIndex, i , webElements);
 
         // Last 게시물을 저장 (글 올린 시간)
         if (VM.oContentList is not null && VM.oContentList[pIndex.Value].dataSet.Count > 0)
             pIndex.LastContentDateTime = VM.oContentList[pIndex.Value].dataSet[VM.oContentList[pIndex.Value].dataSet.Count - 1].date;
+    }
+
+    private void ListRefresh_dcMobile_Find(PageType pIndex, int pElementIndex, IReadOnlyCollection<IWebElement> pWebElement)
+    {
+        IWebElement lLeftLabel = null;
+        IReadOnlyCollection<IWebElement> lBottomLabel = null;
+        try
+        {
+            lLeftLabel = pWebElement.ElementAt(pElementIndex).FindElement(By.ClassName("lt"));
+            lBottomLabel = lLeftLabel.FindElement(By.ClassName("ginfo")).FindElements(By.TagName("li"));
+        }
+        catch
+        { 
+            Console.WriteLine("[while " + pIndex.Value + "] WebElement Fail");
+            return;
+        } // 여기부터 에러면 그냥 리턴
+
+        // 디씨 마갤/미니갤 대응
+        int lElementNumber = 0;
+        if (pIndex.SiteType == 2)
+            lElementNumber++;
+
+        string lUserIconUrl = "";
+        try
+        {
+            lUserIconUrl = lBottomLabel.ElementAt(lElementNumber + 0).FindElement(By.TagName("span")).GetAttribute("class");
+        }
+        catch { }
+
+        string lUserIp = "";
+
+        string lCommentCount = "";
+        try
+        {
+            lCommentCount = pWebElement.ElementAt(pElementIndex).FindElement(By.ClassName("rt")).FindElement(By.ClassName("ct")).Text;
+        }
+        catch { }
+
+        try
+        {
+            Content n = new Content()
+                {
+                    num = UrlToNumber(lLeftLabel.GetAttribute("href")),
+                    url = lLeftLabel.GetAttribute("href"),
+                    title = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.ClassName("subjectin")).Text,
+                    userName = lBottomLabel.ElementAt(lElementNumber + 0).Text,
+                    viewCount = lBottomLabel.ElementAt(lElementNumber + 2).Text.Remove(0, 3),
+                    goodCount = lBottomLabel.ElementAt(lElementNumber + 3).Text.Remove(0, 3),
+                    contentDate = lBottomLabel.ElementAt(lElementNumber + 1).Text,
+                    date = fnDcinsideStrToDate(lBottomLabel.ElementAt(lElementNumber + 1).Text),
+                    userIconUrl = lUserIconUrl,
+                    userIp = lUserIp,
+                    contentIconUrl = lLeftLabel.FindElement(By.ClassName("subject-add")).FindElement(By.TagName("span")).GetAttribute("class"),
+                    commentCount = lCommentCount,
+                };
+
+            VM.oContentList[pIndex.Value].InsertRow(n);
+        }
+        catch
+        {
+            Console.WriteLine("[while " + pIndex.Value + "] new Content Fail");
+            return;
+        }
+    }
+
+    private async Task ListRefresh_dcPC(int pPageNumber, string pPageUrl)
+    {
+        //Console.WriteLine("[ListRefresh " + pPageNumber + "] Start : " + pPageUrl);
+
+        //while(serverOnoff)
+        //{
+        //    Console.WriteLine("[while " + pPageNumber + "] Start");
+        //    try
+        //    {
+        //        //driver.Navigate().Refresh();
+        //        driver[pPageNumber].Navigate().GoToUrl(pPageUrl);
+        //    } catch { }
+
+        //    Console.WriteLine("[while " + pPageNumber + "] End");
+        //    await Task.Delay(500);
+        //    continue;
+
+        //    IReadOnlyCollection<IWebElement> x = driver[pPageNumber].FindElements(By.CssSelector("tr[class='ub-content us-post']"));
+        //    VM.oContentList[pPageNumber].ClearDataset();
+
+        //    int findCount = 0;
+        //    foreach(IWebElement y in x)
+        //    {
+        //        findCount++;
+        //        if (findCount >= 20)
+        //            break;
+
+        //        string lUserIconUrl = "";
+        //        try
+        //        {
+        //            lUserIconUrl = y.FindElement(By.CssSelector("a[class='writer_nikcon']")).FindElement(By.TagName("img")).GetAttribute("src");
+        //        } catch {}
+
+        //        string lUserIp = "";
+        //        try
+        //        {
+        //            lUserIp = y.FindElement(By.CssSelector("span[class='ip']")).Text;
+        //        } catch {}
+
+        //        string lCommentCount = "";
+        //        try
+        //        {
+        //            lCommentCount = y.FindElement(By.CssSelector("a[class='reply_numbox']")).FindElement(By.CssSelector("span[class='reply_num']")).Text;
+        //        } catch {}
+
+        //        try
+        //        {
+        //            IWebElement lTopLabel = y.FindElement(By.ClassName("gall_tit")).FindElement(By.TagName("a")); // gall_tit만 해야함. 마이크 아이콘이 있을 수 있음
+        //            Content n = new Content()
+        //            {
+        //                num = int.Parse(y.FindElement(By.ClassName("gall_num")).Text),
+        //                url = lTopLabel.GetAttribute("href"),
+        //                title = lTopLabel.Text,
+        //                userName = y.FindElement(By.ClassName("nickname")).GetAttribute("title"),
+        //                viewCount = y.FindElement(By.ClassName("gall_count")).Text,
+        //                goodCount = y.FindElement(By.ClassName("gall_recommend")).Text,
+        //                date = StrToDate(y.FindElement(By.ClassName("gall_date")).GetAttribute("title")),
+        //                userIconUrl = lUserIconUrl,
+        //                userIp = lUserIp,
+        //                contentIconUrl = lTopLabel.FindElement(By.TagName("em")).GetAttribute("class"),
+        //                commentCount = lCommentCount,
+        //            };
+
+        //            // 공지는 리스트에 추가 x
+        //            if (n.contentIconUrl == "icon_img icon_notice")
+        //            {
+        //                findCount--; // 공지 수 만큼 다른 게시글로 추가
+        //                continue;
+        //            }
+
+        //            VM.oContentList[pPageNumber].InsertRow(n);
+        //        } catch
+        //        {
+        //            Console.WriteLine("[while " + pPageNumber + "] new Content Fail");
+        //            continue;
+        //        }
+        //    }
+        //    VM.oContentList[pPageNumber].OnPropertyChanged("" + pPageNumber);
+
+        //    Console.WriteLine("[while " + pPageNumber + "] End");
+        //    await Task.Delay(100);
+        //}
     }
 
     // DcInsise 문자열을 DateTime으로 반환
