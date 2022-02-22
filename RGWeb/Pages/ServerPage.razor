@@ -271,7 +271,14 @@
         wrGETURL.Timeout = 3000;
 
         Stream objStream;
-        objStream = wrGETURL.GetResponse().GetResponseStream();
+        try
+        {
+            objStream = wrGETURL.GetResponse().GetResponseStream();
+        }
+        catch
+        {
+            return;
+        }
         HtmlDocument doc = new HtmlDocument();
         doc.Load(objStream);
         objStream.Close();
