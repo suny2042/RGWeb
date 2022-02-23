@@ -12,6 +12,11 @@ namespace RGWeb.ViewModels
             set => SetValue(ref _oContentList, value);
         }
 
-        public bool serverOnoff { get; set; } = false;
+        public static bool _serverOnoff = false;
+        public bool serverOnoff
+        {
+            get => _serverOnoff;
+            set => SetValue(ref _serverOnoff, value);
+        }
     }
 }

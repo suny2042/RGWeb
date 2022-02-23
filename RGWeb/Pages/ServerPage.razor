@@ -25,7 +25,6 @@
 </div>
     
 
-
 @code {
     Stopwatch stopwatch = new Stopwatch();
     List<Thread> threadList = new List<Thread>();
@@ -42,19 +41,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        VM.oContentList.Clear();
-        for (int i = 0; i < PageTypeList.Count; i++)
-            VM.oContentList.Add(new ModelDataSet<Content>());
-
-        for (int i = 0; i < VM.oContentList.Count; i++)
-            VM.oContentList[i].PropertyChanged += async (sender, e) =>
-            {
-                await InvokeAsync(() =>
-                {
-                    StateHasChanged();
-                });
-            };
-
         await base.OnInitializedAsync();
     }
 
@@ -80,7 +66,7 @@
     {
         if (firstRender) // 첫번째 렌더때 실행
         {
-            InitRefreshSchedule();
+            ;
         }
         else             // 첫번째 렌더 후에 실행
         {
@@ -100,6 +86,9 @@
 
     public async Task ServerEnd()
     {
+        for (int i = 0; i < VM.oContentList.Count; i++)
+            VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
+
         Console.WriteLine("[ListRefresh] Dispose");
     }
 
@@ -107,6 +96,21 @@
     public async Task ServerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
     {
         Console.WriteLine("[ListRefresh] Start");
+
+        InitRefreshSchedule();
+
+        VM.oContentList.Clear();
+        for (int i = 0; i < PageTypeList.Count; i++)
+            VM.oContentList.Add(new ModelDataSet<Content>());
+
+        for (int i = 0; i < VM.oContentList.Count; i++)
+            VM.oContentList[i].PropertyChanged += async (sender, e) =>
+            {
+                await InvokeAsync(() =>
+                {
+                    StateHasChanged();
+                });
+            };
 
         while(VM.serverOnoff)
         {
@@ -209,8 +213,13 @@
             }
     }
 
-    private void InitRefreshSchedule()  // 서버 on시 처음 한번만 실행
+    private void InitRefreshSchedule()
     {
+        refreshList_Lv1.Clear();
+        refreshList_Lv2.Clear();
+        refreshList_Lv3.Clear();
+        refreshList_Lv0.Clear();
+
         for (int i=0; i < PageTypeList.Count; i++)
         {
             switch(PageTypeList[i].RefreshLevel)
