@@ -17,8 +17,7 @@
       "launchBrowser": true,
       "launchUrl": "http://192.168.0.82:7188",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.Azure.SignalR"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://192.168.0.82:7188;http://localhost:5188",
       "dotnetRunMessages": true
@@ -27,8 +26,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.Azure.SignalR"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "프로필 1": {
@@ -43,8 +41,7 @@
       "launchUrl": "https://192.168.0.101:7188/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://192.168.0.101:7188;http://localhost:5188",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.Azure.SignalR"
+        "ASPNETCORE_URLS": "https://192.168.0.101:7188;http://localhost:5188"
       },
       "distributionName": ""
     }

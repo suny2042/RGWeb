@@ -132,11 +132,11 @@
             <ContentTemplate>
                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="border-0" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                     <SplitterPanes>
-                        <SplitterPane Size="50%" CssClass="p-0">
+                        <SplitterPane Size="50%" CssClass="p-0" Collapsible="true">
                             <ContentTemplate>
                                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="border-0">
                                     <SplitterPanes>
-                                        <SplitterPane Size="50%" CssClass="p-1">
+                                        <SplitterPane Size="50%" CssClass="p-1" Collapsible="true">
                                             <ContentTemplate>
                                                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                                                     <SplitterPanes>
@@ -165,7 +165,7 @@
                                                 </SfSplitter>
                                             </ContentTemplate>
                                         </SplitterPane>
-                                        <SplitterPane CssClass="p-1">
+                                        <SplitterPane CssClass="p-1" Collapsible="true">
                                             <ContentTemplate>
                                                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                                                     <SplitterPanes>
@@ -198,11 +198,11 @@
                                 </SfSplitter>
                             </ContentTemplate>
                         </SplitterPane>
-                        <SplitterPane CssClass="p-0">
+                        <SplitterPane CssClass="p-0" Collapsible="true">
                             <ContentTemplate>
                                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="border-0">
                                     <SplitterPanes>
-                                        <SplitterPane Size="50%" CssClass="p-1">
+                                        <SplitterPane Size="50%" CssClass="p-1" Collapsible="true">
                                             <ContentTemplate>
                                                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                                                     <SplitterPanes>
@@ -231,7 +231,7 @@
                                                 </SfSplitter>
                                             </ContentTemplate>
                                         </SplitterPane>
-                                        <SplitterPane CssClass="p-1">
+                                        <SplitterPane CssClass="p-1" Collapsible="true">
                                             <ContentTemplate>
                                                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                                                     <SplitterPanes>
@@ -269,7 +269,7 @@
             </ContentTemplate>
         </SplitterPane>
 
-        <SplitterPane>
+        <SplitterPane Collapsible="true">
             <ContentTemplate>
                 <div class="d-flex p-1 w-100 h-100">
                     <iframe id="userIframe" class="rounded border RGBorderColor w-100 h-100" src="ContentBlankPage"></iframe>

@@ -13,9 +13,9 @@
         /// </summary>
         public static long ServerRefreshTime { get; set; } = 0;
         /// <summary>
-        /// 현재 스케줄러에 의한 쓰레드 수 (조회용)
+        /// 현재 스케줄러에 의한 쓰레드
         /// </summary>
-        public static int ServerThreadCount { get; set; } = 0;
+        public static List<Thread> threadList { get; set; } = new List<Thread>();
 
         public const int REFRESH_LEVEL_MAX = 3;
 
