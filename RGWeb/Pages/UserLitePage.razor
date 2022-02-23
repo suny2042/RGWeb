@@ -105,7 +105,7 @@
                         <div class="d-flex flex-column m-0">
                             @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null)
                             {
-                                foreach (Content item in VM.oContentList[selectPage[0]].dataSet)
+                                foreach (Content item in VM.oContentList[selectPage[0]].dataSet ?? Enumerable.Empty<Content>())
                                 {
                                     <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0"></RGWeb.Component.ContentComponent>
                                 }
@@ -132,7 +132,7 @@
                         <div class="d-flex flex-column m-0">
                             @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null)
                             {
-                                foreach (Content item in VM.oContentList[selectPage[1]].dataSet)
+                                foreach (Content item in VM.oContentList[selectPage[1]].dataSet ?? Enumerable.Empty<Content>())
                                 {
                                     <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1"></RGWeb.Component.ContentComponent>
                                 }

@@ -41,6 +41,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        VM.PropertyChanged += async (sender, e) =>
+        {
+            await InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        };
+
         await base.OnInitializedAsync();
     }
 
@@ -55,10 +63,9 @@
     // 메모리 누수 방지
     public void Dispose()
     {
-        //for (int i = 0; i < VM.oContentList.Count; i++)
-        //    VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
-
-        //ServerEnd();
+        VM.PropertyChanged -= OnPropertyChangedHandler;
+        for (int i = 0; i < VM.oContentList.Count; i++)
+            VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
     }
 
     // 페이지가 로드 될 시 (비동기)
@@ -147,6 +154,8 @@
 
             if (ServerRefreshTime < 1000)       // 최소 1초 딜레이 보장
                 await Task.Delay(1000 - (int)ServerRefreshTime);
+            else
+                await Task.Delay(10);
             stopwatch.Stop();
             //Console.WriteLine("타임 : " + stopwatch.ElapsedMilliseconds);
         }
@@ -336,7 +345,7 @@
                 num = UrlToNumber(lLeftLabel.GetAttributeValue("href", "")),
                 url = lLeftLabel.GetAttributeValue("href", ""),
                 title = HttpUtility.HtmlDecode(lLeftLabel.SelectSingleNode("span/span[2]").InnerText),
-                userName = lBottomLabel[lElementNumber + 0].InnerText,
+                userName = HttpUtility.HtmlDecode(lBottomLabel[lElementNumber + 0].InnerText),
                 viewCount = lBottomLabel[lElementNumber + 2].InnerText.Remove(0, 3),
                 goodCount = lBottomLabel[lElementNumber + 3].InnerText.Remove(0, 3),
                 contentDate = lBottomLabel[lElementNumber + 1].InnerText,
