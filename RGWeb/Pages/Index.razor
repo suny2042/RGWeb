@@ -1,5 +1,9 @@
 ﻿@page "/"
 @page "/rg"
+@*〈공통〉*@
+@inject IJSRuntime JS               // 자바스크립트 관련
+@inject ProtectedLocalStorage LS    // 로컬스토리지 관련
+@inject NavigationManager NM        // 페이지 이동 관련
 
 <div class="w-100 h-100 d-flex">
     <div class="container my-auto">
@@ -71,6 +75,9 @@
                         </a>
                     </li>
                     <li>
+                        ~ 개발중
+                    </li>
+                    <li>
                         [220212] 서버구축
                     </li>
                     <li>
@@ -85,7 +92,45 @@
 
 <div class="fixed-bottom text-center RGTextColor">
     <div class="d-block align-items-center mx-auto">
-        <span title="현재 접속자 수"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount)</span>
-        <span title="현재 새로고침되는 주기(밀리초)"><i class="fa-solid fa-bolt"></i>&nbsp;@(ServerInfo.ServerRefreshTime)ms</span>
+        <span title="현재 접속자 수" class="px-1"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount)</span>
+        @if (latency is null) // 레이턴시 체크 (250ms 이내 권장)
+        {
+            <span>Calculating...</span>
+        }
+        else
+        {
+            <span title="RGWeb과의 핑" class="px-1">
+                <i class="fa-solid fa-server"></i>&nbsp;@(latency.Value.TotalMilliseconds.ToString("F2"))ms</span>
+        }
+        <span title="현재 새로고침되는 주기(밀리초) 각 사이트의 상태에 따라 바뀝니다." class="px-1">
+            <i class="fa-solid fa-rotate"></i>&nbsp;@(ServerInfo.ServerRefreshTime)ms</span>
     </div>
 </div>
+
+@code {
+    // 레이턴시 체크
+    private DateTime startTime;
+    private TimeSpan? latency;
+
+    private async Task LatencyCheck()
+    {
+        startTime = DateTime.UtcNow;
+        var _ = await JS.InvokeAsync<string>("toString");
+        latency = DateTime.UtcNow - startTime;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) // 첫번째 렌더때 실행
+        {
+            // 레이턴시 체크
+            await LatencyCheck();
+
+            StateHasChanged();
+        }
+        else
+        {
+            
+        }
+    }
+}

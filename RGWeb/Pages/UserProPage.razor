@@ -14,7 +14,7 @@
     // 현재 선택한 페이지 수들
     private List<int> selectPage = new List<int>()
     {
-        0, 1
+        0, 1, 2, 3
     };
     // 방문한 페이지
     private List<Dictionary<int, bool>> visitedPage = new List<Dictionary<int, bool>>();
@@ -27,6 +27,14 @@
     private void selectPage_1_ValueChange(ChangeEventArgs<int, PageType> args)
     {
         selectPage_ValueChange(1, args);
+    }
+    private void selectPage_2_ValueChange(ChangeEventArgs<int, PageType> args)
+    {
+        selectPage_ValueChange(2, args);
+    }
+    private void selectPage_3_ValueChange(ChangeEventArgs<int, PageType> args)
+    {
+        selectPage_ValueChange(3, args);
     }
     private void selectPage_ValueChange(int pSelectPage, ChangeEventArgs<int, PageType> args)
     {
@@ -117,62 +125,143 @@
 }
 
 
-<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor">
+<SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="">
     <SplitterPanes>
 
-        <SplitterPane Size="250px" Collapsible="true" CssClass="p-0">
+        <SplitterPane Size="510px" Collapsible="true" CssClass="p-0">
             <ContentTemplate>
-                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="border-0" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
                     <SplitterPanes>
-                        <SplitterPane Size="40px" CssClass="p-1">
+                        <SplitterPane Size="50%" CssClass="p-0">
                             <ContentTemplate>
-                                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
-                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
-                                </SfComboBox>
+                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="border-0">
+                                    <SplitterPanes>
+                                        <SplitterPane Size="50%" CssClass="p-1">
+                                            <ContentTemplate>
+                                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                                                    <SplitterPanes>
+                                                        <SplitterPane Size="40px" CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
+                                                                </SfComboBox>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                        <SplitterPane CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <div class="d-flex flex-column m-0">
+                                                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null && visitedPage is not null)
+                                                                    {
+                                                                        foreach (Content item in VM.oContentList[selectPage[0]].dataSet ?? Enumerable.Empty<Content>())
+                                                                        {
+                                                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                    </SplitterPanes>
+                                                </SfSplitter>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                        <SplitterPane CssClass="p-1">
+                                            <ContentTemplate>
+                                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                                                    <SplitterPanes>
+                                                        <SplitterPane Size="40px" CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
+                                                                </SfComboBox>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                        <SplitterPane CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <div class="d-flex flex-column m-0">
+                                                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null && visitedPage is not null)
+                                                                    {
+                                                                        foreach (Content item in VM.oContentList[selectPage[1]].dataSet ?? Enumerable.Empty<Content>())
+                                                                        {
+                                                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1" pVisited="visitedPage[selectPage[1]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                    </SplitterPanes>
+                                                </SfSplitter>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                    </SplitterPanes>
+                                </SfSplitter>
                             </ContentTemplate>
                         </SplitterPane>
-                        <SplitterPane CssClass="p-1">
+                        <SplitterPane CssClass="p-0">
                             <ContentTemplate>
-                                <div class="d-flex flex-column m-0">
-                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null && visitedPage is not null)
-                                    {
-                                        foreach (Content item in VM.oContentList[selectPage[0]].dataSet ?? Enumerable.Empty<Content>())
-                                        {
-                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
-                                        }
-                                    }
-                                </div>
-                            </ContentTemplate>
-                        </SplitterPane>
-                    </SplitterPanes>
-                </SfSplitter>
-            </ContentTemplate>
-        </SplitterPane>
-
-        <SplitterPane Size="250px" Collapsible="true" CssClass="p-0">
-            <ContentTemplate>
-                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
-                    <SplitterPanes>
-                        <SplitterPane Size="40px" CssClass="p-1">
-                            <ContentTemplate>
-                                <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
-                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
-                                </SfComboBox>
-                            </ContentTemplate>
-                        </SplitterPane>
-                        <SplitterPane CssClass="p-1">
-                            <ContentTemplate>
-                                <div class="d-flex flex-column m-0">
-                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null && visitedPage is not null)
-                                    {
-                                        foreach (Content item in VM.oContentList[selectPage[1]].dataSet ?? Enumerable.Empty<Content>())
-                                        {
-                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1" pVisited="visitedPage[selectPage[1]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
-                                        }
-                                    }
-                                </div>
+                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="border-0">
+                                    <SplitterPanes>
+                                        <SplitterPane Size="50%" CssClass="p-1">
+                                            <ContentTemplate>
+                                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                                                    <SplitterPanes>
+                                                        <SplitterPane CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <div class="d-flex flex-column m-0">
+                                                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[2]].dataSet is not null && visitedPage is not null)
+                                                                    {
+                                                                        foreach (Content item in VM.oContentList[selectPage[2]].dataSet ?? Enumerable.Empty<Content>())
+                                                                        {
+                                                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="2" pVisited="visitedPage[selectPage[2]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                        <SplitterPane Size="40px" CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <SfComboBox Value="@selectPage[2]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_2_ValueChange"></ComboBoxEvents>
+                                                                </SfComboBox>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                    </SplitterPanes>
+                                                </SfSplitter>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                        <SplitterPane CssClass="p-1">
+                                            <ContentTemplate>
+                                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                                                    <SplitterPanes>
+                                                        <SplitterPane CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <div class="d-flex flex-column m-0">
+                                                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[3]].dataSet is not null && visitedPage is not null)
+                                                                    {
+                                                                        foreach (Content item in VM.oContentList[selectPage[3]].dataSet ?? Enumerable.Empty<Content>())
+                                                                        {
+                                                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="3" pVisited="visitedPage[selectPage[3]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                        <SplitterPane Size="40px" CssClass="p-1">
+                                                            <ContentTemplate>
+                                                                <SfComboBox Value="@selectPage[3]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_3_ValueChange"></ComboBoxEvents>
+                                                                </SfComboBox>
+                                                            </ContentTemplate>
+                                                        </SplitterPane>
+                                                    </SplitterPanes>
+                                                </SfSplitter>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                    </SplitterPanes>
+                                </SfSplitter>
                             </ContentTemplate>
                         </SplitterPane>
                     </SplitterPanes>

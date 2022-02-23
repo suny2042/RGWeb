@@ -17,11 +17,27 @@
 @using HtmlAgilityPack;
 @using System.Web
 
-<h3 class="RGTextColor">Server</h3>
 
-<div class="d-flex align-items-center RGTextColor">
-    Server Start&nbsp;<SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>
-    &nbsp;쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms
+<div class="w-100 h-100 d-flex RGTextColor">
+    <div class="container my-auto">
+        <div class="card border RGBorderColor">
+            <div class="card-header">
+                <label class="h5 m-0 p-3 fw-bold" style="white-space: nowrap;">
+                    Server Control Panel
+                </label>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center RGTextColor">
+                    <i class="fa-solid fa-server"></i>&nbsp;
+                    <SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>&nbsp;
+                    쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms
+                </div>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+    </div>
 </div>
     
 
@@ -141,9 +157,10 @@
             foreach (Thread t in threadList)
                 t.Join();
             VM.oContentList[0].OnPropertyChanged("All");
-            stopwatch.Stop();
+            //stopwatch.Stop();
             ServerRefreshTime = stopwatch.ElapsedMilliseconds;
-            stopwatch.Start();
+            ServerThreadCount = threadList.Count;
+            //stopwatch.Start();
             Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
 
             // 스케줄러

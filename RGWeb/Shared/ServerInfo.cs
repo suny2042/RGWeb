@@ -8,8 +8,14 @@
         public static int UserConnectCount_LiteMobile { get; set; } = 0;
         public static int UserConnectCount_ProPC { get; set; } = 0;
         public static int UserConnectCount_ProMobile { get; set; } = 0;
-
+        /// <summary>
+        /// 서버가 레프레시되는 주기(ms)
+        /// </summary>
         public static long ServerRefreshTime { get; set; } = 0;
+        /// <summary>
+        /// 현재 스케줄러에 의한 쓰레드 수 (조회용)
+        /// </summary>
+        public static int ServerThreadCount { get; set; } = 0;
 
         public const int REFRESH_LEVEL_MAX = 3;
 
