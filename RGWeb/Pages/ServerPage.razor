@@ -31,6 +31,23 @@
                     <i class="fa-solid fa-server"></i>&nbsp;
                     <SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>&nbsp;
                     쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms
+                    <div class="row m-0">
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile)
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_LitePC)
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_LiteMobile)
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_ProPC)
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_ProMobile)
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">

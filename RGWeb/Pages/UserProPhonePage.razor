@@ -39,7 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ServerInfo.UserConnectCount++;
+        ServerInfo.UserConnectCount_ProMobile++;
 
         // 페이지 클릭 시 보라색 효과용
         for (int i = 0; i < PageTypeList.Count; i++)
@@ -73,7 +73,7 @@
     // 메모리 누수 방지
     public void Dispose()
     {
-        ServerInfo.UserConnectCount--;
+        ServerInfo.UserConnectCount_ProMobile--;
         if (VM.oContentList.Count > 0)
             for (int i = 0; i < selectPage.Count; i++)
                 VM.oContentList[selectPage[i]].PropertyChanged -= OnPropertyChangedHandler;

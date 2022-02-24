@@ -33,7 +33,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ServerInfo.UserConnectCount++;
+        ServerInfo.UserConnectCount_LiteMobile++;
 
         if (VM.oContentList.Count > 0)
         {
@@ -61,7 +61,7 @@
     // 메모리 누수 방지
     public void Dispose()
     {
-        ServerInfo.UserConnectCount--;
+        ServerInfo.UserConnectCount_LiteMobile--;
         if (VM.oContentList.Count > 0)
             for (int i = 0; i < selectPage.Count; i++)
                 VM.oContentList[selectPage[i]].PropertyChanged -= OnPropertyChangedHandler;
