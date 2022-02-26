@@ -119,7 +119,7 @@
 
 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
     <SplitterPanes>
-        <SplitterPane>
+        <SplitterPane Collapsible="true">
             <ContentTemplate>
                 <div class="d-flex p-1 w-100 h-100">
                     <iframe id="userIframe" class="rounded border RGBorderColor w-100 h-100" src="ContentBlankPage"></iframe>
@@ -127,7 +127,7 @@
             </ContentTemplate>
         </SplitterPane>
 
-        <SplitterPane Size="350px" Collapsible="false" CssClass="p-1">
+        <SplitterPane Size="350px" Collapsible="true" CssClass="p-1">
             <ContentTemplate>
 
                 <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor">

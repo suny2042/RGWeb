@@ -223,6 +223,9 @@ window.JS_Collapse = (pButtonID, pElementID) => {
 }
 
 
+window.JS_ListContentvisitedTitleTemp = () => {
+    $('.ListContentvisitedTitleTemp').removeClass('ListContentvisitedTitleTemp');
+}
 
 window.JS_goToIframePro = (pUrl, pTitleId) => {
     $('#userIframe').attr('src', pUrl);
@@ -233,7 +236,53 @@ window.JS_goToIframeLite = (pUrl) => {
     $('#userIframe').attr('src', pUrl);
 }
 
-window.JS_ListContentvisitedTitleTemp = () => {
-    $('.ListContentvisitedTitleTemp').removeClass('ListContentvisitedTitleTemp');
+window.JS_goToIframeAir = (pUrl, pTitleId) => {
+    window.open(pUrl, "_blank");
+    $('#' + pTitleId).attr('class', 'ListContentvisitedTitleTemp');
 }
 
+
+// 출처 : https://nomo.asia/402
+String.prototype.hashCode = function () {
+    var hash = 0,
+        i, char;
+    if (this.length === 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+};
+
+var random_color = {
+    lib: {
+        orange: "#FF4500", brownishorange: "#DAA520", darkgreen: "#008000", blue: "#0000FF", blueviolet: "#8a2be2", brown: "#a52a2a", cadetblue: "#5f9ea0", chocolate: "#d2691e", coral: "#ff7f50", cornflowerblue: "#6495ed", crimson: "#dc143c", darkblue: "#00008b", darkgoldenrod: "#b8860b", darkmagenta: "#8b008b", darkolivegreen: "#556b2f", darkorange: "#ff8c00", darkorchid: "#9932cc", darkred: "#8b0000", darksalmon: "#e9967a", darkslateblue: "#483d8b", darkslategray: "#2f4f4f", darkturquoise: "#00ced1", darkviolet: "#9400d3", deeppink: "#ff1493", dimgray: "#696969", dodgerblue: "#1e90ff", firebrick: "#b22222", forestgreen: "#228b22", grey: "#808080", hotpink: "#ff69b4", indianred: "#cd5c5c", indigo: "#4b0082", lightcoral: "#f08080", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", lightslategrey: "#778899", limegreen: "#32cd32", magenta: "magenta", mediumblue: "#0000cd", mediumorchid: "#ba55d3", mediumpurple: "#9370db", mediumseagreen: "#3cb371", mediumslateblue: "#7b68ee", mediumturquoise: "#48d1cc", mediumvioletred: "#c71585", midnightblue: "#191970", navy: "#000080", olive: "olive", olivedrab: "#6b8e23", orangered: "#ff4500", orchid: "#da70d6", pink: "#FF69B4", purple: "purple", red: "#FF0000", rosybrown: "#bc8f8f", royalblue: "#4169e1", saddlebrown: "#8b4513", salmon: "#fa8072", seagreen: "#2e8b57", sienna: "#a0522d", slateblue: "#6a5acd", slategrey: "#708090", steelblue: "#4682b4", tan: "#d2b48c", tomato: "#ff6347", violet: "#ee82ee",
+    },
+    random: function (str) {
+        var hash, color_key;
+        var colors_keys = Object.keys(this.lib);
+        var colors_keys_length = colors_keys.length;
+
+        // 입력 값이 없는 경우 임의의 랜덤 색상값 출력
+        if (str === undefined) {
+            hash = Math.floor((Math.random() * colors_keys_length) + 1); // random range: 0 - colors_keys_length
+        }
+        // 입력 값이 있는 경우, String 의 hash 에 따른 색상값 출력
+        else {
+            hash = str.hashCode();
+            hash = ((hash % colors_keys_length) + colors_keys_length) % colors_keys_length; // range: 0 - colors_keys_length
+        }
+
+        color_key = colors_keys[hash];
+        return { name: color_key, rgb: this.lib[color_key] };
+    }
+};
+
+window.JS_Colorize = () => {
+    $(".colorize").each(function (index, elem) {
+        var temp_html = $(elem).html();
+        var color_obj = random_color.random(temp_html);
+        $(elem).css("color", color_obj.rgb).attr("colorize", color_obj.name);
+    });
+}

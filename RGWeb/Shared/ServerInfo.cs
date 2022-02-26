@@ -2,8 +2,6 @@
 {
     public class ServerInfo
     {
-        public static int UserConnectCount { get; set; } = 0;
-
         public static int UserConnectCount_LitePC { get; set; } = 0;
         public static int UserConnectCount_LiteMobile { get; set; } = 0;
         public static int UserConnectCount_ProPC { get; set; } = 0;
@@ -56,6 +54,26 @@
             /// </summary>
             public DateTime LastContentDateTime { get; set; }
         }
+
+        public static Dictionary<int, string> UrlPageDictionary = new Dictionary<int, string>()
+        {
+            {1, "https://m.dcinside.com/board/" },
+            {2, "https://m.dcinside.com/board/" },
+            {3, "https://m.dcinside.com/mini/" },
+            {11, "https://arca.live/b/" },
+        };
+        public static Dictionary<int, string> UrlWritePrefixDictionary = new Dictionary<int, string>()
+        {
+            {1, "https://m.dcinside.com/write/" },
+            {2, "https://m.dcinside.com/write/" },
+            {3, "https://m.dcinside.com/writemini/" },
+            {11, "https://arca.live/b/" },
+        };
+        public static Dictionary<int, string> UrlWriteSuffixDictionary = new Dictionary<int, string>()
+        {
+            {11, "/write" },
+        };
+
         public static List<PageType> PageTypeList = new List<PageType>
         {
             new PageType() { Value =  0, SiteType = 1, RefreshLevel = 1, Text = "국내야구", FixedRefreshLevel = true, Url="https://m.dcinside.com/board/baseball_new10" },

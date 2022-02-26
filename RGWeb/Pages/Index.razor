@@ -92,7 +92,7 @@
 
 <div class="fixed-bottom text-center RGTextColor">
     <div class="d-block align-items-center mx-auto">
-        <span title="현재 접속자 수" class="px-1"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount)</span>
+        <span title="현재 접속자 수" class="px-1"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile)</span>
         @if (latency is null) // 레이턴시 체크 (250ms 이내 권장)
         {
             <span>Calculating...</span>
