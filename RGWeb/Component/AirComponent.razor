@@ -26,8 +26,8 @@
     }
 }
 
-<div class="py-1" @onclick="onContent_onclick">
-    <span class="" style="">
+<div class="py-1">
+    <span class="RGTextColor" style="">
         <span class="colorize RGAirTitleFont" style="max-width:115px; text-overflow:ellipsis; white-space:nowrap; overflow: hidden;">
             @(pContent.userName)
         </span>
@@ -35,7 +35,7 @@
             <span class="@(pContent.userIconUrl)" style="vertical-align: middle"></span>
         </span>
         <span>:&nbsp;</span>
-        <span>
+        <span @onclick="onContent_onclick">
             @if (pVisited)
             {
                 <span class="ListContentvisitedTitle" style="vertical-align: middle">@(pContent.title)</span>

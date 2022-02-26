@@ -237,8 +237,39 @@ window.JS_goToIframeLite = (pUrl) => {
 }
 
 window.JS_goToIframeAir = (pUrl, pTitleId) => {
-    window.open(pUrl, "_blank");
+    if (window.devicePixelRatio > 1) // 모바일인 경우
+        window.open(pUrl, "_blank");
+    else {
+        let popupWidth = 1500;
+        let popupHeight = 800;
+        let popupX = (window.screen.width / 2) - (popupWidth / 2);
+        let popupY = (window.screen.height / 2) - (popupHeight / 2);
+
+        window.open(pUrl, 'RGWebViewer_Air2'
+            , 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + popupX + ',top=' + popupY
+            + 'toolbar=no,location=no,menubar=no,status=no,titlebar=no');
+    }
     $('#' + pTitleId).attr('class', 'ListContentvisitedTitleTemp');
+}
+
+// 에어 화면 팝업
+window.JS_goToAir = () => {
+    if (window.devicePixelRatio > 1) // 모바일인 경우
+        document.location.href = 'rg/userproairpage';
+    else {
+        let popupWidth = 350;
+        let popupHeight = 800;
+        let popupX = (window.screen.width / 2) - (popupWidth / 2);
+        let popupY = (window.screen.height / 2) - (popupHeight / 2);
+
+        window.open('rg/userproairpage', 'RGWebViewer_Air1'
+            , 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + popupX + ',top=' + popupY
+            + 'toolbar=no,location=no,menubar=no,status=no,titlebar=no')
+    }
+}
+// 에어 화면 열리면 스크롤 최하단으로 이동
+window.JS_initAir = () => {
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 

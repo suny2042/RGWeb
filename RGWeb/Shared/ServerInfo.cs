@@ -6,6 +6,7 @@
         public static int UserConnectCount_LiteMobile { get; set; } = 0;
         public static int UserConnectCount_ProPC { get; set; } = 0;
         public static int UserConnectCount_ProMobile { get; set; } = 0;
+        public static int UserConnectCount_ProAir { get; set; } = 0;
         /// <summary>
         /// 서버가 레프레시되는 주기(ms)
         /// </summary>

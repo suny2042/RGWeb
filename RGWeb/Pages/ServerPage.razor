@@ -30,22 +30,43 @@
                 <div class="d-flex align-items-center RGTextColor">
                     <i class="fa-solid fa-server"></i>&nbsp;
                     <SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>&nbsp;
-                    쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms
-                    <div class="row m-0">
+                    쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms 
+                    <div class="row m-0 rounded border RGBorderColor">
                         <div class="col p-1">
-                            @(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile)
+                            <i class="fa-solid fa-border-all"></i>
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile + ServerInfo.UserConnectCount_ProAir)
+                        </div>
+                        <div class="col p-1">
+                            <i class="fa-solid fa-desktop"></i><i class="fa-solid fa-tablet"></i><span class="badge bg-secondary">Lite</span>
                         </div>
                         <div class="col p-1">
                             @(ServerInfo.UserConnectCount_LitePC)
                         </div>
                         <div class="col p-1">
+                            <i class="fa-solid fa-mobile-screen-button"></i><span class="badge bg-secondary">Lite</span>
+                        </div>
+                        <div class="col p-1">
                             @(ServerInfo.UserConnectCount_LiteMobile)
+                        </div>
+                        <div class="col p-1">
+                            <i class="fa-solid fa-desktop"></i><i class="fa-solid fa-tablet"></i><span class="badge bg-warning">Pro</span>
                         </div>
                         <div class="col p-1">
                             @(ServerInfo.UserConnectCount_ProPC)
                         </div>
                         <div class="col p-1">
+                            <i class="fa-solid fa-mobile-screen-button"></i><span class="badge bg-warning">Pro</span>
+                        </div>
+                        <div class="col p-1">
                             @(ServerInfo.UserConnectCount_ProMobile)
+                        </div>
+                        <div class="col p-1">
+                            <i class="fa-solid fa-tower-broadcast"></i><span class="badge bg-warning">Pro</span>
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_ProAir)
                         </div>
                     </div>
                 </div>

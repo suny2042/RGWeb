@@ -53,6 +53,14 @@
             </div>
         </div>
 
+        <div class="row m-0 d-flex">
+            <div class="col p-1">
+                <SfButton CssClass="e-miracle e-outline e-block d-flex align-items-center" style="height: 60px;" OnClick="@(e => {JS.InvokeVoidAsync("JS_goToAir");})">
+                    <i class="fa-solid fa-tower-broadcast"></i>&nbsp;Broadcasting&nbsp;<span class="badge bg-warning">Pro</span>
+                </SfButton>
+            </div>
+        </div>
+
         <div class="d-block p-1 RGTextColor">
             <div class="p-1 rounded border RGBorderColor" style="height: 200px;">
                 <ul class="">
@@ -92,7 +100,7 @@
 
 <div class="fixed-bottom text-center RGTextColor">
     <div class="d-block align-items-center mx-auto">
-        <span title="현재 접속자 수" class="px-1"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile)</span>
+        <span title="현재 접속자 수" class="px-1"><i class="fa-solid fa-user-group"></i>&nbsp;@(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile + ServerInfo.UserConnectCount_ProAir)</span>
         @if (latency is null) // 레이턴시 체크 (250ms 이내 권장)
         {
             <span>Calculating...</span>
