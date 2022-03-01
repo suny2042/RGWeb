@@ -1,7 +1,13 @@
-﻿namespace RGWeb.Models
+﻿namespace RGWeb.Shared.Models
 {
     public class ContentModel
     {
+        public class Payload
+        {
+            public int crawlingRefreshTime { get; set; }
+            public List<List<Content>> content { get; set; }
+        }
+
         public class Content : BaseModel
         {
             /// <summary>

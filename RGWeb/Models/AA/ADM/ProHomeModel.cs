@@ -1,6 +1,7 @@
-﻿using Syncfusion.Blazor.Popups;
+﻿using RGWeb.Shared.Models;
+using Syncfusion.Blazor.Popups;
 
-namespace RGWeb.Models.AA.ADM
+namespace RGWeb.Shared.Models.AA.ADM
 {
     public class ProHomeModel
     {

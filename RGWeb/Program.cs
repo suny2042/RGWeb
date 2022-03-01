@@ -4,10 +4,13 @@ using Syncfusion.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 닷넷코어 MVC 추가
+builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
+// 서비스 추가
 builder.Services.AddScoped<RGWeb.ViewModels.IContentViewModel, RGWeb.ViewModels.ContentViewModel>();
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTU5MTcwQDMxMzkyZTM0MmUzMGRnSUwwelF2Y0YvOTdjOU1nQ3BFQVlMdVNacXViYkFrR1dyNTZHbmFrWTg9");
@@ -30,6 +33,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+// 닷넷코어 MVC 추가
+app.UseMvcWithDefaultRoute();
+
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.Run();

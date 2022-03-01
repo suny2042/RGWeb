@@ -1,4 +1,4 @@
-﻿namespace RGWeb.Models
+﻿namespace RGWeb.Shared.Models
 {
     public class BaseModel
     {

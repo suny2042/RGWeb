@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RGWeb", "RGWeb\RGWeb.csproj", "{4FF62EC4-E70B-4B66-9145-25A09EA0F4FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGWeb.Shared", "RGWeb.Shared\RGWeb.Shared.csproj", "{2CD7DC9E-C40D-464E-A608-5A5A647AD6AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGWeb.Crawler", "RGWeb.Crawler\RGWeb.Crawler.csproj", "{16913E4E-E7C7-455B-8AFE-EFDA44F22E66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{4FF62EC4-E70B-4B66-9145-25A09EA0F4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FF62EC4-E70B-4B66-9145-25A09EA0F4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FF62EC4-E70B-4B66-9145-25A09EA0F4FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CD7DC9E-C40D-464E-A608-5A5A647AD6AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CD7DC9E-C40D-464E-A608-5A5A647AD6AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CD7DC9E-C40D-464E-A608-5A5A647AD6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CD7DC9E-C40D-464E-A608-5A5A647AD6AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16913E4E-E7C7-455B-8AFE-EFDA44F22E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16913E4E-E7C7-455B-8AFE-EFDA44F22E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16913E4E-E7C7-455B-8AFE-EFDA44F22E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16913E4E-E7C7-455B-8AFE-EFDA44F22E66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

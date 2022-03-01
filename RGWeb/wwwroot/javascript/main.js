@@ -122,7 +122,7 @@ window.JS_ProWindow_getDialogId = () => {
     let lResult = '';
     try {
         while (true) {
-            if ((element == null) || (typeof element.id) == "undefined") { // 2022.01.04 윤기선
+            if ((element == null) || (typeof element.id) == "undefined") { // 2022.01.04 
                 console.log('[JS_ProWindow_getDialogId] 요소없음');
                 return;
             }
@@ -139,7 +139,7 @@ window.JS_ProWindow_getDialogId = () => {
                 element = element.parentElement;
         }
     } catch (e) {
-        console.log(e); // 2022.01.03 윤기선 가끔 창 크기 조절하다 캐치로 빠짐
+        console.log(e); // 2022.01.03  가끔 창 크기 조절하다 캐치로 빠짐
     }
 
     return lResult;
@@ -152,7 +152,7 @@ window.JS_ProWindow_focus = () => {
     let element = document.activeElement;
     let lFind = false;
     while (true) {
-        if ((element == null) || (typeof element.id) == "undefined") { // 2022.01.04 윤기선
+        if ((element == null) || (typeof element.id) == "undefined") { // 2022.01.04 
             console.log('[JS_ProWindow_focus] 요소없음');
             return;
         }
@@ -186,7 +186,7 @@ window.JS_ProWindow_getLocation = (pId) => {
         lResult += $(pId).offset().top + '|';
         lResult += $(pId).css('z-index');
     } catch (e) {
-        console.log(e); // 2022.01.14 윤기선 창 닫은 후로 다른 창 위치이동시 캐치로 빠짐
+        console.log(e); // 2022.01.14  창 닫은 후로 다른 창 위치이동시 캐치로 빠짐
     }
     return lResult;
 }

@@ -12,10 +12,11 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using Syncfusion.Blazor.Grids;
 using RGWeb.ViewModels;
-using RGWeb.Models;
+using RGWeb.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using RGWeb.Shared;
 using Microsoft.JSInterop;
+using static RGWeb.Shared.Models.AA.ADM.ProHomeModel;
 
 namespace RGWeb.DB.Common
 {
@@ -345,7 +346,7 @@ namespace RGWeb.DB.Common
     {
         private IJSRuntime _JS;
         private UserConnectionInfo _UCI;
-        private Models.AA.ADM.ProHomeModel.ProWindowLayout _ProWindowLayout;
+        private ProWindowLayout _ProWindowLayout;
 
         public BasePageComponentControl()
         {
@@ -358,7 +359,7 @@ namespace RGWeb.DB.Common
         /// <param name="pUCI">UserConnectionInfo</param>
         /// <param name="pProWindowLayout">ProWindowLayout</param>
         /// <param name="pMenuBar">True : 해당 페이지의 하단 메뉴바를 활성화합니다.</param>
-        public BasePageComponentControl(IJSRuntime pJS, UserConnectionInfo pUCI, Models.AA.ADM.ProHomeModel.ProWindowLayout pProWindowLayout, bool pMenuBar)
+        public BasePageComponentControl(IJSRuntime pJS, UserConnectionInfo pUCI, ProWindowLayout pProWindowLayout, bool pMenuBar)
         {
             _JS = pJS;
             _UCI = pUCI;

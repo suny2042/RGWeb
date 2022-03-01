@@ -1,4 +1,4 @@
-﻿using static RGWeb.Models.ContentModel;
+﻿using static RGWeb.Shared.Models.ContentModel;
 
 namespace RGWeb.ViewModels
 {
@@ -17,6 +17,13 @@ namespace RGWeb.ViewModels
         {
             get => _serverOnoff;
             set => SetValue(ref _serverOnoff, value);
+        }
+
+        public static bool _serverCrawlerOnoff = false;
+        public bool serverCrawlerOnoff
+        {
+            get => _serverCrawlerOnoff;
+            set => SetValue(ref _serverCrawlerOnoff, value);
         }
     }
 }

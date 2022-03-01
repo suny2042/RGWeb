@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using RGWeb.Models;
-using static RGWeb.Models.ContentModel;
+using RGWeb.Shared.Models;
+using static RGWeb.Shared.Models.ContentModel;
 using System.ComponentModel;
 
 namespace RGWeb.ViewModels
@@ -19,5 +19,6 @@ namespace RGWeb.ViewModels
         List<ModelDataSet<Content>> oContentList { get; set; }
 
         public bool serverOnoff { get; set; }
+        public bool serverCrawlerOnoff { get; set; }
     }
 }

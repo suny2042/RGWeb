@@ -6,7 +6,7 @@
 @inject NavigationManager NM        // 페이지 이동 관련
 @* 뷰모델의 인스턴스 주입 *@
 @inject RGWeb.ViewModels.IContentViewModel VM
-@using static RGWeb.Models.ContentModel
+@using static RGWeb.Shared.Models.ContentModel
 @using RGWeb.ViewModels
 @using static RGWeb.Shared.ServerInfo
 
@@ -30,13 +30,21 @@
                 <div class="d-flex align-items-center RGTextColor">
                     <i class="fa-solid fa-server"></i>&nbsp;
                     <SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>&nbsp;
+                    <i class="fa-solid fa-align-left"></i>&nbsp;
+                    <SfSwitch @bind-Checked="VM.serverCrawlerOnoff" TChecked="bool" ValueChange="serverCrawlerOnoff_ValueChange"></SfSwitch>&nbsp;
                     쓰레드 수 : @(threadList.Count) / 시간 : @(ServerRefreshTime)ms 
                     <div class="row m-0 rounded border RGBorderColor">
                         <div class="col p-1">
                             <i class="fa-solid fa-border-all"></i>
                         </div>
                         <div class="col p-1">
-                            @(ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile + ServerInfo.UserConnectCount_ProAir)
+                            @(ServerInfo.UserConnectCount_Index + ServerInfo.UserConnectCount_LitePC + ServerInfo.UserConnectCount_LiteMobile + ServerInfo.UserConnectCount_ProPC + ServerInfo.UserConnectCount_ProMobile + ServerInfo.UserConnectCount_ProAir)
+                        </div>
+                        <div class="col p-1">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <div class="col p-1">
+                            @(ServerInfo.UserConnectCount_Index)
                         </div>
                         <div class="col p-1">
                             <i class="fa-solid fa-desktop"></i><i class="fa-solid fa-tablet"></i><span class="badge bg-secondary">Lite</span>
@@ -137,29 +145,58 @@
 
     private void serverOnoff_ValueChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
     {
-        //VM.serverOnoff = args.Checked;
-
         if (VM.serverOnoff)
             ServerStart();
-        else
-            ServerEnd();
     }
 
-    public async Task ServerEnd()
+    public async Task ServerStart()
+    {
+        await InitContentList();
+
+        while(VM.serverOnoff)
+        {
+            //VM.oContentList = StaticData.sContent;
+
+            for (int i = 0; i < StaticData.sContent.Count; i++)
+            {
+                VM.oContentList[i].dataSet.Clear();
+                for (int j = 0; j < StaticData.sContent[i].dataSet.Count; j++)
+                {
+                    VM.oContentList[i].dataSet.Add(StaticData.sContent[i].dataSet[j]);
+                }
+                //VM.oContentList[i].dataSet = StaticData.sContent[i].dataSet;
+                //VM.oContentList[i].dataSet = DataSetControl.Copy<Content>(StaticData.sContent[i].dataSet);
+            }
+
+            VM.oContentList[0].OnPropertyChanged("All");
+            await Task.Delay(1000);
+        }
+    }
+
+    private void serverCrawlerOnoff_ValueChange(Syncfusion.Blazor.Buttons.ChangeEventArgs<bool> args)
+    {
+        if (VM.serverCrawlerOnoff)
+            ServerCrawlingStart();
+        else
+            ServerCrawlingEnd();
+    }
+
+    public async Task ServerCrawlingStart()
+    {
+        Console.WriteLine("[Crawling] Start");
+        await ServerCrawlerStart();
+    }
+
+    public async Task ServerCrawlingEnd()
     {
         for (int i = 0; i < VM.oContentList.Count; i++)
             VM.oContentList[i].PropertyChanged -= OnPropertyChangedHandler;
 
-        Console.WriteLine("[ListRefresh] Dispose");
+        Console.WriteLine("[Crawling] Dispose");
     }
 
-    // 페이지의 시작
-    public async Task ServerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
+    public async Task InitContentList()
     {
-        Console.WriteLine("[ListRefresh] Start");
-
-        InitRefreshSchedule();
-
         VM.oContentList.Clear();
         for (int i = 0; i < PageTypeList.Count; i++)
             VM.oContentList.Add(new ModelDataSet<Content>());
@@ -172,8 +209,18 @@
                     StateHasChanged();
                 });
             };
+    }
 
-        while(VM.serverOnoff)
+    // 페이지의 시작
+    public async Task ServerCrawlerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
+    {
+        Console.WriteLine("[ServerCrawler] Start");
+
+        InitRefreshSchedule();
+
+        await InitContentList();
+
+        while(VM.serverCrawlerOnoff)
         {
             stopwatch.Reset();
             stopwatch.Start();

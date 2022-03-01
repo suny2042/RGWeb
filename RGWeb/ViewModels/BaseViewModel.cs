@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using RGWeb.DB.Common;
-using RGWeb.Models;
+using RGWeb.Shared.Models;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using RGWeb.Shared;
 

@@ -2,6 +2,8 @@
 {
     public class ServerInfo
     {
+        public static string RGWebServerUrl { get; set; } = "";
+        public static int UserConnectCount_Index { get; set; } = 0;
         public static int UserConnectCount_LitePC { get; set; } = 0;
         public static int UserConnectCount_LiteMobile { get; set; } = 0;
         public static int UserConnectCount_ProPC { get; set; } = 0;
