@@ -9,6 +9,12 @@ namespace RGWeb.Shared
 {
     public static class RGComLib
     {
+        public enum CrawlerType
+        {
+            ConsoleApp,
+            ServerSide
+        }
+
         public static object? ContentToJson(List<List<Content>> pContent)
         {
             var payload = new Payload

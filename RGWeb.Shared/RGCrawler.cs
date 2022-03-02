@@ -10,18 +10,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using static RGWeb.Shared.Models.ContentModel;
+using static RGWeb.Shared.RGComLib;
 using static RGWeb.Shared.ServerInfo;
 
-namespace RGWeb.Crawler
+namespace RGWeb.Shared.Crawler
 {
-    internal class RGCrawler
+    public class RGCrawler
     {
-        public bool serverOnoff { get; set; } = false;
+        private bool serverOnoff { get; set; } = false;
 
-        private static List<List<Content>> oContentList = new List<List<Content>>();
+        public static List<List<Content>> oContentList = new List<List<Content>>();
 
-        Stopwatch stopwatch = new Stopwatch();
-        List<Thread> threadList = new List<Thread>();
+        private Stopwatch stopwatch = new Stopwatch();
+        private List<Thread> threadList = new List<Thread>();
 
         // 리프레쉬 스케줄러
         private List<PageType> refreshList_Lv0 = new List<PageType>(); // 자동
@@ -33,10 +34,10 @@ namespace RGWeb.Crawler
         private List<PageType> refreshList_Lv3 = new List<PageType>();
         private List<Queue<PageType>> refreshQueue_Lv3 = new List<Queue<PageType>>();
 
-        public async Task CrawlingStart()
+        public async Task CrawlingStart(CrawlerType pCrawlerType)
         {
             serverOnoff = true;
-            await CrawlerStart();
+            await CrawlerStart(pCrawlerType);
         }
         public async Task CrawlingEnd()
         {
@@ -45,7 +46,7 @@ namespace RGWeb.Crawler
         }
 
         // 페이지의 시작
-        public async Task CrawlerStart() // 페이지가 처음 로드될때 (아래보다 주로 사용)
+        private async Task CrawlerStart(CrawlerType pCrawlerType) // 페이지가 처음 로드될때 (아래보다 주로 사용)
         {
             Console.WriteLine("[Blazor TEST] Start");
 
@@ -80,7 +81,7 @@ namespace RGWeb.Crawler
                         t.Join();
 
                     ServerRefreshTime = stopwatch.ElapsedMilliseconds;
-                    //Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
+                    Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
 
                     // 스케줄러
                     PageSchedule(refreshList_Lv1);
@@ -95,7 +96,8 @@ namespace RGWeb.Crawler
                     stopwatch.Stop();
                     //Console.WriteLine("타임 : " + stopwatch.ElapsedMilliseconds);
 
-                    await SendToRGWebServer();
+                    if (pCrawlerType == CrawlerType.ConsoleApp)
+                        await SendToRGWebServer();
                 } catch { }
                 
             }
@@ -115,6 +117,11 @@ namespace RGWeb.Crawler
             //Console.WriteLine(msg); // 응답결과
             var result = msg.Content.ReadAsStringAsync().Result;
             //Console.WriteLine(result); // 응답에 포함된 Body 내용
+        }
+
+        private async void RefreshRGWebServer()
+        {
+
         }
 
         private void PageSchedule(List<PageType> pRefreshList_Lv)
