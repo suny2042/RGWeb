@@ -81,7 +81,7 @@ namespace RGWeb.Shared.Crawler
                         t.Join();
 
                     ServerRefreshTime = stopwatch.ElapsedMilliseconds;
-                    Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
+                    //Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
 
                     // 스케줄러
                     PageSchedule(refreshList_Lv1);
@@ -119,10 +119,6 @@ namespace RGWeb.Shared.Crawler
             //Console.WriteLine(result); // 응답에 포함된 Body 내용
         }
 
-        private async void RefreshRGWebServer()
-        {
-
-        }
 
         private void PageSchedule(List<PageType> pRefreshList_Lv)
         {
