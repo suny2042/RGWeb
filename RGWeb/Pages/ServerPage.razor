@@ -21,12 +21,12 @@
 <div class="w-100 h-100 d-flex RGTextColor">
     <div class="container my-auto">
         <div class="card border RGBorderColor">
-            <div class="card-header">
+            <div class="card-header RGBodyBackgroundColor">
                 <label class="h5 m-0 p-3 fw-bold" style="white-space: nowrap;">
                     Server Control Panel
                 </label>
             </div>
-            <div class="card-body">
+            <div class="card-body RGBodyBackgroundColor">
                 <div class="d-flex align-items-center RGTextColor">
                     <i class="fa-solid fa-server"></i>&nbsp;
                     <SfSwitch @bind-Checked="VM.serverOnoff" TChecked="bool" ValueChange="serverOnoff_ValueChange"></SfSwitch>&nbsp;
@@ -79,7 +79,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
+            <div class="card-footer RGBodyBackgroundColor">
 
             </div>
         </div>
@@ -155,17 +155,11 @@
 
         while(VM.serverOnoff)
         {
-            //VM.oContentList = StaticData.sContent;
-
             for (int i = 0; i < StaticData.sContent.Count; i++)
             {
                 VM.oContentList[i].dataSet.Clear();
                 for (int j = 0; j < StaticData.sContent[i].dataSet.Count; j++)
-                {
                     VM.oContentList[i].dataSet.Add(StaticData.sContent[i].dataSet[j]);
-                }
-                //VM.oContentList[i].dataSet = StaticData.sContent[i].dataSet;
-                //VM.oContentList[i].dataSet = DataSetControl.Copy<Content>(StaticData.sContent[i].dataSet);
             }
 
             VM.oContentList[0].OnPropertyChanged("All");
@@ -184,7 +178,8 @@
     public async Task ServerCrawlingStart()
     {
         Console.WriteLine("[Crawling] Start");
-        await ServerCrawlerStart();
+        //await ServerCrawlerStart();
+        
     }
 
     public async Task ServerCrawlingEnd()

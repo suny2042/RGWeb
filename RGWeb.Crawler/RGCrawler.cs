@@ -290,7 +290,7 @@ namespace RGWeb.Crawler
 
                 // 디씨 마갤/미니갤 대응
                 int lElementNumber = 0;
-                if (pIndex.SiteType == 2 || pIndex.SiteType == 3)
+                if (pIndex.SiteType == 2 || pIndex.SiteType == 3 || pIndex.SiteType == 4)
                     lElementNumber++;
 
                 string lUserIconUrl = "";
