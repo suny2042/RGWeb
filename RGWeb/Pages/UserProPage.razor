@@ -142,10 +142,20 @@
                                                     <SplitterPanes>
                                                         <SplitterPane Size="40px" CssClass="p-1">
                                                             <ContentTemplate>
-                                                                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
-                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
-                                                                </SfComboBox>
+                                                                <div class="d-flex justify-content-start">
+                                                                    <div class="pe-1">
+                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), false, false))">
+                                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                                        </SfButton>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
+                                                                        </SfComboBox>
+                                                                    </div>
+                                                                </div>
                                                             </ContentTemplate>
                                                         </SplitterPane>
                                                         <SplitterPane CssClass="p-1">
@@ -171,10 +181,20 @@
                                                     <SplitterPanes>
                                                         <SplitterPane Size="40px" CssClass="p-1">
                                                             <ContentTemplate>
-                                                                <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
-                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
-                                                                </SfComboBox>
+                                                                <div class="d-flex justify-content-start">
+                                                                    <div class="pe-1">
+                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[1]), RGComLib.GetMobileWritePageUrl(selectPage[1]), false, false))">
+                                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                                        </SfButton>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
+                                                                        </SfComboBox>
+                                                                    </div>
+                                                                </div>
                                                             </ContentTemplate>
                                                         </SplitterPane>
                                                         <SplitterPane CssClass="p-1">
@@ -221,10 +241,20 @@
                                                         </SplitterPane>
                                                         <SplitterPane Size="40px" CssClass="p-1">
                                                             <ContentTemplate>
-                                                                <SfComboBox Value="@selectPage[2]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
-                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_2_ValueChange"></ComboBoxEvents>
-                                                                </SfComboBox>
+                                                                <div class="d-flex justify-content-start">
+                                                                    <div class="pe-1">
+                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[2]), RGComLib.GetMobileWritePageUrl(selectPage[2]), false, false))">
+                                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                                        </SfButton>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <SfComboBox Value="@selectPage[2]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_2_ValueChange"></ComboBoxEvents>
+                                                                        </SfComboBox>
+                                                                    </div>
+                                                                </div>
                                                             </ContentTemplate>
                                                         </SplitterPane>
                                                     </SplitterPanes>
@@ -250,10 +280,20 @@
                                                         </SplitterPane>
                                                         <SplitterPane Size="40px" CssClass="p-1">
                                                             <ContentTemplate>
-                                                                <SfComboBox Value="@selectPage[3]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
-                                                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_3_ValueChange"></ComboBoxEvents>
-                                                                </SfComboBox>
+                                                                <div class="d-flex justify-content-start">
+                                                                    <div class="pe-1">
+                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[3]), RGComLib.GetMobileWritePageUrl(selectPage[3]), false, false))">
+                                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                                        </SfButton>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <SfComboBox Value="@selectPage[3]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_3_ValueChange"></ComboBoxEvents>
+                                                                        </SfComboBox>
+                                                                    </div>
+                                                                </div>
                                                             </ContentTemplate>
                                                         </SplitterPane>
                                                     </SplitterPanes>

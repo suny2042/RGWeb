@@ -236,6 +236,7 @@ window.JS_goToIframeLite = (pUrl) => {
     $('#userIframe').attr('src', pUrl);
 }
 
+// 에어 화면에서 글 눌렀을 때 팝업
 window.JS_goToIframeAir = (pUrl, pTitleId) => {
     if (window.devicePixelRatio > 1) // 모바일인 경우
         window.open(pUrl, "_blank");
@@ -270,6 +271,31 @@ window.JS_goToAir = () => {
 // 에어 화면 열리면 스크롤 최하단으로 이동
 window.JS_initAir = () => {
     window.scrollTo(0, document.body.scrollHeight);
+}
+
+// 글쓰기 눌렀을 때  pPopupOnoff: 팝업모드로 열지 / pFixedPCMode: 강제 PC모드로 설정
+window.JS_goToContentWrite = (pUrl, pUrlMobile, pPopupOnoff, pFixedPCMode) => {
+    let Url = "";
+    if (window.devicePixelRatio > 1) // 모바일인 경우
+        Url = pUrlMobile;
+    else
+        Url = pUrl;
+
+    if (pFixedPCMode == true)   // 강제 PC모드가 설정되어 있는 경우
+        Url = pUrl;
+
+    if (pPopupOnoff == false) // 팝업모드 off (새탭모드)
+        window.open(Url, "_blank");
+    else {
+        let popupWidth = 1500;
+        let popupHeight = 800;
+        let popupX = (window.screen.width / 2) - (popupWidth / 2);
+        let popupY = (window.screen.height / 2) - (popupHeight / 2);
+
+        window.open(Url, 'RGWebViewer_ContentWrite'
+            , 'width=' + popupWidth + ',height=' + popupHeight + ',left=' + popupX + ',top=' + popupY
+            + 'toolbar=no,location=no,menubar=no,status=no,titlebar=no');
+    }
 }
 
 

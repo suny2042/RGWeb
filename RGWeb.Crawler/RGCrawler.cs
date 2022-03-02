@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
+using RGWeb.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -236,9 +237,12 @@ namespace RGWeb.Crawler
 
         private void ListRefresh_dcMobile_Thread(PageType pIndex)
         {
-            //using System.Net;
+            //using System.Net; [사용되지 않음]이니 나중에 httpclient 등으로 변경하기
             HttpWebRequest wrGETURL;
-            wrGETURL = (HttpWebRequest)WebRequest.Create(pIndex.Url);
+            // 사이트 종류에 따라서 게시판 링크와 조합
+            string targetUrl = UrlPageDictionary.GetValueOrDefault(pIndex.SiteType) + pIndex.Url;
+
+            wrGETURL = (HttpWebRequest)WebRequest.Create(targetUrl);
             wrGETURL.Method = "GET";
             wrGETURL.UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1";
             wrGETURL.Timeout = 3000;
