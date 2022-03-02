@@ -61,39 +61,43 @@ namespace RGWeb.Crawler
                 stopwatch.Start();
                 threadList.Clear();
 
-                LoadRefreshSchedule();
-
-                NewThread_LvN(ref threadList, refreshQueue_Lv1);
-                NewThread_LvN(ref threadList, refreshQueue_Lv2);
-                NewThread_LvN(ref threadList, refreshQueue_Lv3);
-                NewThread_LvN(ref threadList, refreshQueue_Lv0);
-
-                foreach (Thread t in threadList)
+                try
                 {
-                    t.IsBackground = true;
-                    t.Start();
-                }
+                    LoadRefreshSchedule();
 
-                foreach (Thread t in threadList)
-                    t.Join();
+                    NewThread_LvN(ref threadList, refreshQueue_Lv1);
+                    NewThread_LvN(ref threadList, refreshQueue_Lv2);
+                    NewThread_LvN(ref threadList, refreshQueue_Lv3);
+                    NewThread_LvN(ref threadList, refreshQueue_Lv0);
 
-                ServerRefreshTime = stopwatch.ElapsedMilliseconds;
-                //Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
+                    foreach (Thread t in threadList)
+                    {
+                        t.IsBackground = true;
+                        t.Start();
+                    }
 
-                // 스케줄러
-                PageSchedule(refreshList_Lv1);
-                PageSchedule(refreshList_Lv2);
-                PageSchedule(refreshList_Lv3);
-                PageSchedule(refreshList_Lv0);
+                    foreach (Thread t in threadList)
+                        t.Join();
 
-                if (ServerRefreshTime < 1000)       // 최소 1초 딜레이 보장
-                    await Task.Delay(1000 - (int)ServerRefreshTime);
-                else
-                    await Task.Delay(10);
-                stopwatch.Stop();
-                //Console.WriteLine("타임 : " + stopwatch.ElapsedMilliseconds);
+                    ServerRefreshTime = stopwatch.ElapsedMilliseconds;
+                    //Console.WriteLine("[While] 쓰레드수 : " + threadList.Count + " / 시간결과 : " + ServerRefreshTime + "ms");
 
-                await SendToRGWebServer();
+                    // 스케줄러
+                    PageSchedule(refreshList_Lv1);
+                    PageSchedule(refreshList_Lv2);
+                    PageSchedule(refreshList_Lv3);
+                    PageSchedule(refreshList_Lv0);
+
+                    if (ServerRefreshTime < 1000)       // 최소 1초 딜레이 보장
+                        await Task.Delay(1000 - (int)ServerRefreshTime);
+                    else
+                        await Task.Delay(10);
+                    stopwatch.Stop();
+                    //Console.WriteLine("타임 : " + stopwatch.ElapsedMilliseconds);
+
+                    await SendToRGWebServer();
+                } catch { }
+                
             }
         }
 
