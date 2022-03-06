@@ -135,72 +135,85 @@
                     <SplitterPanes>
                         <SplitterPane Size="50%" Collapsible="true">
                             <ContentTemplate>
-                                <div class="d-flex flex-column m-0">
-                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null && visitedPage is not null)
-                                    {
-                                        foreach (Content item in VM.oContentList[selectPage[0]].dataSet ?? Enumerable.Empty<Content>())
-                                        {
-                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
-                                        }
-                                    }
-                                </div>
+                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                                    <SplitterPanes>
+                                        <SplitterPane CssClass="p-1">
+                                            <ContentTemplate>
+                                                <div class="d-flex flex-column m-0">
+                                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null && visitedPage is not null)
+                                                    {
+                                                        foreach (Content item in VM.oContentList[selectPage[0]].dataSet ?? Enumerable.Empty<Content>())
+                                                        {
+                                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                                        }
+                                                    }
+                                                </div>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                        <SplitterPane Size="40px" CssClass="p-1" Collapsible="true">
+                                            <ContentTemplate>
+                                                <div class="d-flex justify-content-start">
+                                                    <div class="pe-1">
+                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), false, false))">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </SfButton>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
+                                                        </SfComboBox>
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                    </SplitterPanes>
+                                </SfSplitter>
                             </ContentTemplate>
                         </SplitterPane>
                         <SplitterPane Collapsible="true">
                             <ContentTemplate>
-                                <div class="d-flex flex-column m-0">
-                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null && visitedPage is not null)
-                                    {
-                                        foreach (Content item in VM.oContentList[selectPage[1]].dataSet ?? Enumerable.Empty<Content>())
-                                        {
-                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1" pVisited="visitedPage[selectPage[1]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
-                                        }
-                                    }
-                                </div>
+                                <SfSplitter Height="100%" Width="100%" SeparatorSize="3" CssClass="rounded RGBorderColor" Orientation="Syncfusion.Blazor.Layouts.Orientation.Vertical">
+                                    <SplitterPanes>
+                                        <SplitterPane CssClass="p-1">
+                                            <ContentTemplate>
+                                                <div class="d-flex flex-column m-0">
+                                                    @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[1]].dataSet is not null && visitedPage is not null)
+                                                    {
+                                                        foreach (Content item in VM.oContentList[selectPage[1]].dataSet ?? Enumerable.Empty<Content>())
+                                                        {
+                                                            <RGWeb.Component.ContentComponent pContent="@item" pSelectPage="1" pVisited="visitedPage[selectPage[1]].ContainsKey(item.num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.ContentComponent>
+                                                        }
+                                                    }
+                                                </div>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                        <SplitterPane Size="40px" CssClass="p-1" Collapsible="true">
+                                            <ContentTemplate>
+                                                <div class="d-flex justify-content-start">
+                                                    <div class="pe-1">
+                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[1]), RGComLib.GetMobileWritePageUrl(selectPage[1]), false, false))">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </SfButton>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
+                                                            <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
+                                                            <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
+                                                        </SfComboBox>
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </SplitterPane>
+                                    </SplitterPanes>
+                                </SfSplitter>
                             </ContentTemplate>
                         </SplitterPane>
                     </SplitterPanes>
                 </SfSplitter>
 
-            </ContentTemplate>
-        </SplitterPane>
-
-        <SplitterPane Size="40px" Collapsible="false" CssClass="p-0">
-            <ContentTemplate>
-                <div class="row m-0">
-                    <div class="col p-1">
-                        <div class="d-flex justify-content-start">
-                            <div class="pe-1">
-                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                          OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), false, false))">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </SfButton>
-                            </div>
-                            <div class="flex-grow-1">
-                                <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" InputAttributes="@(new Dictionary<string, object>() { { "inputmode", "none" } })">
-                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
-                                </SfComboBox>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col p-1">
-                        <div class="d-flex justify-content-start">
-                            <div class="pe-1">
-                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                          OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[1]), RGComLib.GetMobileWritePageUrl(selectPage[1]), false, false))">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </SfButton>
-                            </div>
-                            <div class="flex-grow-1">
-                                <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" InputAttributes="@(new Dictionary<string, object>() { { "inputmode", "none" } })">
-                                    <ComboBoxFieldSettings Value="Value" Text="Text"></ComboBoxFieldSettings>
-                                    <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_1_ValueChange"></ComboBoxEvents>
-                                </SfComboBox>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </ContentTemplate>
         </SplitterPane>
 
