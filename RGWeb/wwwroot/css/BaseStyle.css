@@ -1,11 +1,4 @@
-﻿/* 
-    
-    (주)에스파이온
-
-    SPAEON 공통 CSS 양식
-
-*/
-
+﻿
 /*
     공  통
 */
@@ -20,7 +13,6 @@ body {
     height: 100%;
 }
 
-/*KDH*/
 .spaeon_nameBackgroundColor {
     background-color: #d4d4d4;
 }
@@ -94,7 +86,6 @@ body {
     그리드 관련
 */
 
-/* 2021.11.09 KDH*/
 /* 헤더 배경색 */
 .e-columnheader .e-headercell {
     background-color: #429CFF !important;

@@ -95,6 +95,10 @@ p {
         color: #ffffff;
     }
 
+    .IframeBackgroundColor {
+        background-color: #bbbbbb;
+    }
+
     .RGBodyBackgroundColor {
         background-color: #202124;
     }
