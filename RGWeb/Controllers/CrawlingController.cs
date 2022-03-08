@@ -33,22 +33,25 @@ namespace RGWeb.Controllers
 
 
         [HttpPost("Crawler")]
-        public string Post_Crawler([FromBody] Payload value)
+        public ActionResult Post_Crawler([FromBody] Payload value)
         {
-            StaticData.sContent.Clear();
-            ServerInfo.ServerRefreshTime = value.crawlingRefreshTime;
-
-            for (int i = 0; i < value.content.Count; i++)
+            try
             {
-                ModelDataSet<Content> mds = new();
-                for (int j=0; j < value.content[i].Count; j++)
-                {
-                    mds.InsertRow(value.content[i][j]);
-                }    
-                StaticData.sContent.Add(mds);
-            }
+                StaticData.sContent.Clear();
+                ServerInfo.ServerRefreshTime = value.crawlingRefreshTime;
 
-            return "valuePost";
+                for (int i = 0; i < value.content.Count; i++)
+                {
+                    ModelDataSet<Content> mds = new();
+                    for (int j=0; j < value.content[i].Count; j++)
+                    {
+                        mds.InsertRow(value.content[i][j]);
+                    }    
+                    StaticData.sContent.Add(mds);
+                }
+            } catch { }
+
+            return Ok();
         }
 
         // PUT api/<CrawlingController>/5

@@ -156,15 +156,19 @@
 
         while(VM.serverOnoff)
         {
-            for (int i = 0; i < StaticData.sContent.Count; i++)
+            try
             {
-                VM.oContentList[i].dataSet.Clear();
-                for (int j = 0; j < StaticData.sContent[i].dataSet.Count; j++)
-                    VM.oContentList[i].dataSet.Add(StaticData.sContent[i].dataSet[j]);
-            }
+                for (int i = 0; i < StaticData.sContent.Count; i++)
+                {
+                    VM.oContentList[i].dataSet.Clear();
+                    for (int j = 0; j < StaticData.sContent[i].dataSet.Count; j++)
+                        VM.oContentList[i].dataSet.Add(StaticData.sContent[i].dataSet[j]);
+                }
 
-            VM.oContentList[0].OnPropertyChanged("All");
-            await Task.Delay(1000);
+                VM.oContentList[0].OnPropertyChanged("All");
+                await Task.Delay(1000);
+            } catch {}
+
         }
     }
 
