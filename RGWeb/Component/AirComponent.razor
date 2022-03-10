@@ -20,7 +20,7 @@
     {
         if (onUrlClickEvent is not null)
         {
-            JS.InvokeVoidAsync("JS_goToIframeAir", pContent.url, "title_" + pSelectPage + "_" + pContent.num);
+            //JS.InvokeVoidAsync("JS_goToIframeAir", pContent.url, "title_" + pSelectPage + "_" + pContent.num);
             onUrlClickEvent?.Invoke(pSelectPage, pContent.num);
         }
     }
@@ -36,14 +36,16 @@
         </span>
         <span>:&nbsp;</span>
         <span @onclick="onContent_onclick">
-            @if (pVisited)
-            {
-                <span class="ListContentvisitedTitle" style="vertical-align: middle">@(pContent.title)</span>
-            }
-            else
-            {
-                <span id="@("title_" + pSelectPage + "_" + pContent.num)" style="vertical-align: middle">@(pContent.title)</span>
-            }
+            <a href="@pContent.url" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                @if (pVisited)
+                {
+                    <span class="ListContentvisitedTitle" style="vertical-align: middle">@(pContent.title)</span>
+                }
+                else
+                {
+                    <span id="@("title_" + pSelectPage + "_" + pContent.num)" style="vertical-align: middle">@(pContent.title)</span>
+                }
+            </a>
         </span>
         <span class="ps-1">
             @if (pContent.goodCount == "0")

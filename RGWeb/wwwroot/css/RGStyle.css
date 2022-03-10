@@ -62,6 +62,10 @@ p {
     color: #000000;
 }
 
+a:hover {
+    color: #000000;
+}
+
 .RGBodyBackgroundColor {
     background-color: #ffffff;
 }
@@ -92,6 +96,10 @@ p {
 /* 다크 모드에 적용할 스타일 정의 */
 @media (prefers-color-scheme: dark) {
     .RGTextColor {
+        color: #ffffff;
+    }
+
+    a:hover {
         color: #ffffff;
     }
 
