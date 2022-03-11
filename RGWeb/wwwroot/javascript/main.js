@@ -239,7 +239,8 @@ window.JS_goToIframeLite = (pUrl) => {
 // 에어 화면에서 글 눌렀을 때 팝업
 window.JS_goToIframeAir = (pUrl, pTitleId) => {
     if (window.devicePixelRatio > 1) // 모바일인 경우
-        window.open(pUrl, "_blank");
+        //window.open(pUrl, "_blank");
+        ;
     else {
         let popupWidth = 1500;
         let popupHeight = 800;
@@ -343,3 +344,36 @@ window.JS_Colorize = () => {
         $(elem).css("color", color_obj.rgb).attr("colorize", color_obj.name);
     });
 }
+
+// 모바일 유무 판별
+window.JS_UserAgent = () => {
+    let currentOS;
+    let agent = (/iphone|ipad|ipod|macintosh|android/i.test(navigator.userAgent.toLowerCase()));
+
+    if (agent) {
+        // 유저에이전트를 불러와서 OS를 구분합니다.
+        let userAgent = navigator.userAgent.toLowerCase();
+
+        if (userAgent.search("android") > -1) {
+            currentOS = "android";
+            mobileYN = true;
+        }
+        else if ((userAgent.search("iphone") > -1) || (userAgent.search("ipod") > -1)
+            || (userAgent.search("ipad") > -1)) {
+            currentOS = "ios";
+        }
+        else if (userAgent.search("macintosh") > -1) {
+            currentOS = "macintosh";
+        }
+        else {
+            currentOS = "other";
+        }
+    } else {
+        // 모바일이 아닐 때
+        currentOS = "pc";
+    }
+
+    return currentOS;
+}
+
+

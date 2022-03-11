@@ -12,18 +12,25 @@ namespace RGWeb.ViewModels
             set => SetValue(ref _oContentList, value);
         }
 
-        public static bool _serverOnoff = false;
+        private static bool _serverOnoff = false;
         public bool serverOnoff
         {
             get => _serverOnoff;
             set => SetValue(ref _serverOnoff, value);
         }
 
-        public static bool _serverCrawlerOnoff = false;
+        private static bool _serverCrawlerOnoff = false;
         public bool serverCrawlerOnoff
         {
             get => _serverCrawlerOnoff;
             set => SetValue(ref _serverCrawlerOnoff, value);
+        }
+
+        private string _userAgent = "";     // 클라이언트 유저 에이전트값
+        public string userAgent
+        {
+            get => _userAgent;
+            set => SetValue(ref _userAgent, value);
         }
     }
 }

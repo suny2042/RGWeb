@@ -19,6 +19,8 @@
     // 방문한 페이지
     private List<Dictionary<int, bool>> visitedPage = new List<Dictionary<int, bool>>();
 
+    // 팝업창으로 열기유무 (기본값은 iOS때문에 새탭으로)
+    private bool optionPopupOnoff = false;
 
     private void selectPage_0_ValueChange(ChangeEventArgs<int, PageType> args)
     {
@@ -82,6 +84,9 @@
         if (firstRender) // 첫번째 렌더때 실행
         {
             JS.InvokeVoidAsync("JS_initAir");
+
+            if (string.IsNullOrEmpty(VM.userAgent))
+                VM.userAgent = await JS.InvokeAsync<string>("JS_UserAgent");
         }
         else             // 첫번째 렌더 후에 실행
         {
@@ -119,10 +124,30 @@
             <ContentTemplate>
                 <div class="d-flex justify-content-start">
                     <div class="pe-1">
-                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), true, false))">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </SfButton>
+                        @if (VM.userAgent == "ios")
+                        {
+                            <a href="@RGComLib.GetMobileWritePageUrl(selectPage[0])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </SfButton>
+                            </a>
+                        }
+                        else if (VM.userAgent == "macintosh")
+                        {
+                            <a href="@RGComLib.GetWritePageUrl(selectPage[0])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </SfButton>
+                            </a>
+                        }
+                        else
+                        {
+                            <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                      OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), optionPopupOnoff, false))">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </SfButton>
+                        }
+                        
                     </div>
                     <div class="flex-grow-1">
                         <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
@@ -130,6 +155,15 @@
                             <ComboBoxEvents TValue="int" TItem="PageType" ValueChange="selectPage_0_ValueChange"></ComboBoxEvents>
                         </SfComboBox>
                     </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center p-1 RGTextColor">
+                    <div class="p-1">
+                        새 창에서 열기 (only PC)
+                    </div>
+                    <div>
+
+                    </div>
+                    <SfSwitch @bind-Checked="optionPopupOnoff" TChecked="bool"></SfSwitch>
                 </div>
             </ContentTemplate>
         </SplitterPane>
@@ -140,7 +174,7 @@
                     {
                         for(int i = VM.oContentList[selectPage[0]].dataSet.Count - 1; i >= 0; i--)
                         {
-                            <RGWeb.Component.AirComponent pContent="@VM.oContentList[selectPage[0]].dataSet[i]" pSelectPage="0" pVisited="visitedPage[selectPage[0]].ContainsKey(VM.oContentList[selectPage[0]].dataSet[i].num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.AirComponent>
+                            <RGWeb.Component.AirComponent pContent="@VM.oContentList[selectPage[0]].dataSet[i]" pSelectPage="0" pOptionPopupOnoff="optionPopupOnoff" pVisited="visitedPage[selectPage[0]].ContainsKey(VM.oContentList[selectPage[0]].dataSet[i].num)" onUrlClickEvent="fnUrlClickEvent"></RGWeb.Component.AirComponent>
                         }
                     }
                 </div>

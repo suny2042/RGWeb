@@ -9,6 +9,9 @@
     public int pSelectPage { get; set; }
 
     [Parameter]
+    public bool pOptionPopupOnoff { get; set; } = false;
+
+    [Parameter]
     public bool pVisited { get; set; } = false;
 
     [Parameter]
@@ -20,7 +23,9 @@
     {
         if (onUrlClickEvent is not null)
         {
-            //JS.InvokeVoidAsync("JS_goToIframeAir", pContent.url, "title_" + pSelectPage + "_" + pContent.num);
+            if (pOptionPopupOnoff)
+                JS.InvokeVoidAsync("JS_goToIframeAir", pContent.url, "title_" + pSelectPage + "_" + pContent.num);
+
             onUrlClickEvent?.Invoke(pSelectPage, pContent.num);
         }
     }
@@ -36,16 +41,32 @@
         </span>
         <span>:&nbsp;</span>
         <span @onclick="onContent_onclick">
-            <a href="@pContent.url" target="_blank" class="RGTextColor" style="text-decoration: none;">
-                @if (pVisited)
-                {
-                    <span class="ListContentvisitedTitle" style="vertical-align: middle">@(pContent.title)</span>
-                }
-                else
-                {
-                    <span id="@("title_" + pSelectPage + "_" + pContent.num)" style="vertical-align: middle">@(pContent.title)</span>
-                }
-            </a>
+            
+            @if (pOptionPopupOnoff)
+            {
+                    @if (pVisited)
+                    {
+                        <span class="ListContentvisitedTitle" style="vertical-align: middle">@(pContent.title)</span>
+                    }
+                    else
+                    {
+                        <span id="@("title_" + pSelectPage + "_" + pContent.num)" style="vertical-align: middle">@(pContent.title)</span>
+                    }
+            }
+            else
+            {
+                 <a href="@pContent.url" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                    @if (pVisited)
+                    {
+                        <span class="ListContentvisitedTitle" style="vertical-align: middle">@(pContent.title)</span>
+                    }
+                    else
+                    {
+                        <span id="@("title_" + pSelectPage + "_" + pContent.num)" style="vertical-align: middle">@(pContent.title)</span>
+                    }
+                 </a>
+            }
+            
         </span>
         <span class="ps-1">
             @if (pContent.goodCount == "0")
