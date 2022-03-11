@@ -92,7 +92,8 @@
     {
         if (firstRender) // 첫번째 렌더때 실행
         {
-            ;
+            if (string.IsNullOrEmpty(VM.userAgent))
+                VM.userAgent = await JS.InvokeAsync<string>("JS_UserAgent");
         }
         else             // 첫번째 렌더 후에 실행
         {
@@ -144,10 +145,29 @@
                                                             <ContentTemplate>
                                                                 <div class="d-flex justify-content-start">
                                                                     <div class="pe-1">
-                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), false, false))">
-                                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                                        </SfButton>
+                                                                        @if (VM.userAgent == "ios")
+                                                                        {
+                                                                            <a href="@RGComLib.GetMobileWritePageUrl(selectPage[0])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else if (VM.userAgent == "macintosh")
+                                                                        {
+                                                                            <a href="@RGComLib.GetWritePageUrl(selectPage[0])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                      OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[0]), RGComLib.GetMobileWritePageUrl(selectPage[0]), false, false))">
+                                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                                            </SfButton>
+                                                                        }
                                                                     </div>
                                                                     <div class="flex-grow-1">
                                                                         <SfComboBox Value="@selectPage[0]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
@@ -183,10 +203,29 @@
                                                             <ContentTemplate>
                                                                 <div class="d-flex justify-content-start">
                                                                     <div class="pe-1">
-                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[1]), RGComLib.GetMobileWritePageUrl(selectPage[1]), false, false))">
-                                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                                        </SfButton>
+                                                                        @if (VM.userAgent == "ios")
+                                                                        {
+                                                                            <a href="@RGComLib.GetMobileWritePageUrl(selectPage[1])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else if (VM.userAgent == "macintosh")
+                                                                        {
+                                                                            <a href="@RGComLib.GetWritePageUrl(selectPage[1])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                      OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[1]), RGComLib.GetMobileWritePageUrl(selectPage[1]), false, false))">
+                                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                                            </SfButton>
+                                                                        }
                                                                     </div>
                                                                     <div class="flex-grow-1">
                                                                         <SfComboBox Value="@selectPage[1]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
@@ -243,10 +282,29 @@
                                                             <ContentTemplate>
                                                                 <div class="d-flex justify-content-start">
                                                                     <div class="pe-1">
-                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[2]), RGComLib.GetMobileWritePageUrl(selectPage[2]), false, false))">
-                                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                                        </SfButton>
+                                                                        @if (VM.userAgent == "ios")
+                                                                        {
+                                                                            <a href="@RGComLib.GetMobileWritePageUrl(selectPage[2])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else if (VM.userAgent == "macintosh")
+                                                                        {
+                                                                            <a href="@RGComLib.GetWritePageUrl(selectPage[2])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                      OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[2]), RGComLib.GetMobileWritePageUrl(selectPage[2]), false, false))">
+                                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                                            </SfButton>
+                                                                        }
                                                                     </div>
                                                                     <div class="flex-grow-1">
                                                                         <SfComboBox Value="@selectPage[2]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
@@ -282,10 +340,29 @@
                                                             <ContentTemplate>
                                                                 <div class="d-flex justify-content-start">
                                                                     <div class="pe-1">
-                                                                        <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
-                                                                                  OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[3]), RGComLib.GetMobileWritePageUrl(selectPage[3]), false, false))">
-                                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                                        </SfButton>
+                                                                        @if (VM.userAgent == "ios")
+                                                                        {
+                                                                            <a href="@RGComLib.GetMobileWritePageUrl(selectPage[3])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else if (VM.userAgent == "macintosh")
+                                                                        {
+                                                                            <a href="@RGComLib.GetWritePageUrl(selectPage[3])" target="_blank" class="RGTextColor" style="text-decoration: none;">
+                                                                                <SfButton style="width:35px" CssClass="e-secondary e-outline e-small">
+                                                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                                                </SfButton>
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <SfButton style="width:35px" CssClass="e-secondary e-outline e-small"
+                                                                                      OnClick="@(e => JS.InvokeVoidAsync("JS_goToContentWrite", RGComLib.GetWritePageUrl(selectPage[3]), RGComLib.GetMobileWritePageUrl(selectPage[3]), false, false))">
+                                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                                            </SfButton>
+                                                                        }
                                                                     </div>
                                                                     <div class="flex-grow-1">
                                                                         <SfComboBox Value="@selectPage[3]" DataSource="@PageTypeList" ShowClearButton="false" AllowFiltering="true">
