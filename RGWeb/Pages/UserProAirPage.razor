@@ -53,7 +53,7 @@
                         CleanVisitedPage();
                         StateHasChanged();
                         JS.InvokeVoidAsync("JS_ListContentvisitedTitleTemp");   // 클라에서 선택했던 타이틀 임시 css 제거
-                    JS.InvokeVoidAsync("JS_Colorize");                      // 채팅 작성자 랜덤 컬러 지정
+                        JS.InvokeVoidAsync("JS_AirContentListUpdate");             // 채팅 작성자 지정된 랜덤컬러부여 / 스크롤 하단 보정
                 });
                 };
         }
@@ -166,9 +166,9 @@
                 </div>
             </ContentTemplate>
         </SplitterPane>
-        <SplitterPane CssClass="p-1" Collapsible="true">
+        <SplitterPane CssClass="p-1 UserProAirPage_SplitterPane_ContentList" Collapsible="true">
             <ContentTemplate>
-                <div class="d-flex flex-column m-0">
+                <div id="UserProAirPage_div_ContentList" class="d-flex flex-column m-0">
                     @if (VM.oContentList.Count > 0 && VM.oContentList[selectPage[0]].dataSet is not null && visitedPage is not null)
                     {
                         for(int i = VM.oContentList[selectPage[0]].dataSet.Count - 1; i >= 0; i--)

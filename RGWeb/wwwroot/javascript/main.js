@@ -272,6 +272,58 @@ window.JS_goToAir = () => {
 // 에어 화면 열리면 스크롤 최하단으로 이동
 window.JS_initAir = () => {
     window.scrollTo(0, document.body.scrollHeight);
+
+    // 에어화면은 최하단 스크롤시 하단 고정
+    // PC
+    window.addEventListener('wheel', () => { 
+        fnContentListScroll_BottomScrollFixed();
+    });
+    // 안드로이드
+    window.addEventListener('touchmove', () => {
+        fnContentListScroll_BottomScrollFixed();
+    });
+    // iOS
+    window.addEventListener('gesturechange', () => {
+        fnContentListScroll_BottomScrollFixed();
+    });
+}
+
+function fnContentListScroll_BottomScrollFixed() {
+
+    if (window.devicePixelRatio > 1) // 모바일인 경우
+    {
+        let mobileHeightOffset = ($('#UserProAirPage_div_ContentList').height() - $('.UserProAirPage_SplitterPane_ContentList').height());
+
+        if (Math.floor($('.UserProAirPage_SplitterPane_ContentList').scrollTop())
+            >= mobileHeightOffset)
+            ContentListScroll_BottomScrollFixed = true;
+        else
+            ContentListScroll_BottomScrollFixed = false;
+    }
+    else
+    {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height())
+            ContentListScroll_BottomScrollFixed = true;
+        else
+            ContentListScroll_BottomScrollFixed = false;
+    }
+
+    //console.log(ContentListScroll_BottomScrollFixed);
+}
+
+
+var ContentListScroll_BottomScrollFixed = true;  // 스크롤 최하단으로 고정여부
+window.JS_AirContentListUpdate = () => {
+    // 글작성자 색부여
+    JS_Colorize();
+
+    // 에어 화면 게시글 업데이트시 스크롤 높이 보정
+    if (ContentListScroll_BottomScrollFixed) {
+        if (window.devicePixelRatio > 1) // 모바일인 경우
+            $('.UserProAirPage_SplitterPane_ContentList').scrollTop(document.body.scrollHeight)
+        else
+            window.scrollTo(0, document.body.scrollHeight);
+    }
 }
 
 // 글쓰기 눌렀을 때  pPopupOnoff: 팝업모드로 열지 / pFixedPCMode: 강제 PC모드로 설정
