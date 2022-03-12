@@ -9,6 +9,9 @@ namespace RGWeb.Shared
 {
     public static class RGComLib
     {
+        /// <summary>
+        /// 크롤러가 콘솔앱에서 작동하는지 서버사이드앱에서 작동하는지
+        /// </summary>
         public enum CrawlerType
         {
             ConsoleApp,

@@ -53,7 +53,7 @@
                         CleanVisitedPage();
                         StateHasChanged();
                         JS.InvokeVoidAsync("JS_ListContentvisitedTitleTemp");   // 클라에서 선택했던 타이틀 임시 css 제거
-                        JS.InvokeVoidAsync("JS_AirContentListUpdate");             // 채팅 작성자 지정된 랜덤컬러부여 / 스크롤 하단 보정
+                    JS.InvokeVoidAsync("JS_AirContentListUpdate");             // 채팅 작성자 지정된 랜덤컬러부여 / 스크롤 하단 보정
                 });
                 };
         }
@@ -87,6 +87,10 @@
 
             if (string.IsNullOrEmpty(VM.userAgent))
                 VM.userAgent = await JS.InvokeAsync<string>("JS_UserAgent");
+
+            // PC화면인 경우 팝업모드를 기본으로
+            if (VM.userAgent == "pc")
+                optionPopupOnoff = true;
         }
         else             // 첫번째 렌더 후에 실행
         {
