@@ -89,6 +89,12 @@
     
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "pwGuid")]
+    public string? pwGuid { get; set; }
+
+    string pwGuid_admin = "201418ab-4432-4f27-9d90-4e56d27fd5e8";
+
     Stopwatch stopwatch = new Stopwatch();
     List<Thread> threadList = new List<Thread>();
 
@@ -101,6 +107,16 @@
     private List<Queue<PageType>> refreshQueue_Lv2 = new List<Queue<PageType>>();
     private List<PageType> refreshList_Lv3 = new List<PageType>();
     private List<Queue<PageType>> refreshQueue_Lv3 = new List<Queue<PageType>>();
+
+    protected override void OnInitialized()
+    {
+        // 어드민 키가 안맞는 경우 추방
+        if (string.IsNullOrEmpty(pwGuid))
+            NM.NavigateTo("/");
+
+        if (pwGuid != pwGuid_admin)
+            NM.NavigateTo("/");
+    }
 
     protected override async Task OnInitializedAsync()
     {
