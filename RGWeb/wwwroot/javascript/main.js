@@ -340,7 +340,7 @@ window.JS_goToContentWrite = (pUrl, pUrlMobile, pPopupOnoff, pFixedPCMode) => {
     if (pPopupOnoff == false) // 팝업모드 off (새탭모드)
         window.open(Url, "_blank");
     else {
-        let popupWidth = 1500;
+        let popupWidth = 1500; // 보통은 $(window).width(); .height() 
         let popupHeight = 800;
         let popupX = (window.screen.width / 2) - (popupWidth / 2);
         let popupY = (window.screen.height / 2) - (popupHeight / 2);
