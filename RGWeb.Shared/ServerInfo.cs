@@ -109,7 +109,7 @@
 
         public static List<PageType> PageTypeList = new List<PageType>
         {
-            new PageType() { Value =  0, SiteType = 1, RefreshLevel = 1, Text = "국내야구", FixedRefreshLevel = true, Url="baseball_new10" },
+            new PageType() { Value =  0, SiteType = 1, RefreshLevel = 1, Text = "국내야구", FixedRefreshLevel = true, Url="baseball_new11" },
             new PageType() { Value =  1, SiteType = 1, RefreshLevel = 0, Text = "만화", Url="comic_new3" },
             new PageType() { Value =  2, SiteType = 1, RefreshLevel = 0, Text = "스트리머", Url="stream_new1" },
             new PageType() { Value =  3, SiteType = 1, RefreshLevel = 0, Text = "인터넷방송", Url="ib_new2" },
