@@ -129,6 +129,7 @@
 
             //new PageType() { Value = 14, SiteType = 11, RefreshLevel = 0, Text = "원신", Url="https://arca.live/b/genshin" },
             //new PageType() { Value = 15, SiteType = 11, RefreshLevel = 0, Text = "에픽세븐", Url="https://arca.live/b/epic7" },
+
         };
     }
 }
