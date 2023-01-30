@@ -352,7 +352,7 @@ window.JS_goToContentWrite = (pUrl, pUrlMobile, pPopupOnoff, pFixedPCMode) => {
 }
 
 
-// 출처 : https://nomo.asia/402
+// 랜덤색상 부여 출처 : https://nomo.asia/402
 String.prototype.hashCode = function () {
     var hash = 0,
         i, char;
